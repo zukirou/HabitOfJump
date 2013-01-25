@@ -191,6 +191,7 @@ public class GameScreen extends GLScreen{
 			TouchEvent event = touchEvents.get(i);
 			if(event.type != TouchEvent.TOUCH_UP)
 				continue;
+			World.gravity = new Vector2(0, -12);
 			game.setScreen(new MainMenuScreen(game));
 		}
 	}
@@ -256,7 +257,7 @@ public class GameScreen extends GLScreen{
 	}
 	
 	private void presentGameOver(){
-		batcher.drawSprite(160, 240, 160, 96, Assets.gameOver);
+		batcher.drawSprite(160, 150, 160, 96, Assets.gameOver);
 		float scoreWidth = Assets.font.glyphWidth * scoreString.length();
 		Assets.font.drawText(batcher, scoreString, 160 - scoreWidth / 2, 480 - 20);
 	}

@@ -7,9 +7,10 @@ public class Platform extends DynamicGameObject{
 	public static final float PLATFORM_HEIGHT = 2;
 	public static final int PLATFORM_TYPE_STATIC = 0;
 	public static final int PLATFORM_TYPE_MOVING = 1;
-	public static final int PLATFORM_TYPE_BREAK = 2;
+	public static final int PLATFORM_TYPE_NONBREAK = 2;
 	public static final int PLATFORM_STATE_NOMAL = 0;
 	public static final int PLATFORM_STATE_PULVERIZING = 1;
+	public static final int PLATFORM_STATE_FIXED = 2;
 	public static final float PLATFORM_PULVERIZE_TIME = 0.2f * 4;
 	public static final float PLATFORM_VELOCITY = 2;
 	
@@ -25,9 +26,15 @@ public class Platform extends DynamicGameObject{
 		if(type == PLATFORM_TYPE_MOVING){
 			velocity.x = PLATFORM_VELOCITY;
 		}
+		if(type == PLATFORM_TYPE_NONBREAK){
+			this.state = PLATFORM_STATE_FIXED;
+		}
 	}
 	
 	public void update(float deltaTime){
+		if(type == PLATFORM_TYPE_NONBREAK){
+			bounds.lowerLeft.set(position).sub(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT);	
+		}
 		if(type == PLATFORM_TYPE_MOVING){
 			position.add(velocity.x * deltaTime, 0);
 			bounds.lowerLeft.set(position).sub(PLATFORM_WIDTH / 2, PLATFORM_HEIGHT / 2);

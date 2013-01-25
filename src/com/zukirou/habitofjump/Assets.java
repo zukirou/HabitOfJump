@@ -29,8 +29,10 @@ public class Assets{
 	public static Animation sizFall;
 	public static TextureRegion sizHit;
 	public static Animation umaFly;
+	public static Animation umaToge;
 	public static TextureRegion platform;
 	public static Animation breakingPlatform;
+	public static TextureRegion nonBreakPlatform;
 	public static Font font;
 	public static Music music;
 	public static Sound jumpSound;
@@ -69,15 +71,18 @@ public class Assets{
 		
 		sizHit = new TextureRegion(items, 128, 128, 32, 32);
 
-		umaFly = new Animation(0.2f,	new TextureRegion(items, 0, 160, 32, 32),
-										new TextureRegion(items, 32, 160, 32, 32));
+		umaFly = new Animation(0.2f,	new TextureRegion(items, 0, 160, 32, 16),
+										new TextureRegion(items, 32, 160, 32, 16));
+		
+		umaToge = new Animation(0.2f,	new TextureRegion(items, 0, 176, 32, 16),
+										new TextureRegion(items, 32, 176, 32, 16));
 		
 		platform = new TextureRegion(items, 64, 160, 64, 64);
 		breakingPlatform = new Animation(0.2f,	new TextureRegion(items, 0, 224, 64, 64),
 												new TextureRegion(items, 64, 224, 64, 64),
 												new TextureRegion(items, 128, 224, 64, 64),
 												new TextureRegion(items, 196, 224, 64, 64));
-		
+		nonBreakPlatform = new TextureRegion(items, 128, 160, 64, 16);
 		font = new Font(items, 224, 0, 16, 16, 20);
 		
 		music = game.getAudio().newMusic("bgmDrum.ogg");

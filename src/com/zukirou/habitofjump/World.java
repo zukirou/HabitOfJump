@@ -20,12 +20,13 @@ public class World {
 	public static final int WORLD_STATE_RUNNING = 0;
 	public static final int WORLD_STATE_NEXT_LEVEL = 1;
 	public static final int WORLD_STATE_GAME_OVER = 2;
-	public static final Vector2 gravity = new Vector2(0, -12);
+	public static Vector2 gravity = new Vector2(0, -12);
 	
 	public final PC pc;
 	public final List<Platform> platforms;
 	public final List<Spring> springs;
 	public final List<Uma> umas;
+	public final List<UmaToge> umaToges;
 	public final List<Coin> coins;
 	public Castle castle;
 	public final WorldListener listener;
@@ -40,6 +41,7 @@ public class World {
 		this.platforms = new ArrayList<Platform>();
 		this.springs = new ArrayList<Spring>();
 		this.umas = new ArrayList<Uma>();
+		this.umaToges = new ArrayList<UmaToge>();
 		this.coins = new ArrayList<Coin>();
 		this.listener = listener;
 		
@@ -57,6 +59,10 @@ public class World {
 		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){
 			int type = rand.nextFloat() > 0.8f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
 			float x = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
+			
+			if(type == Platform.PLATFORM_TYPE_STATIC)				
+				type = rand.nextFloat() > 0.5 ? Platform.PLATFORM_TYPE_STATIC : Platform.PLATFORM_TYPE_NONBREAK;
+			
 			Platform platform = new Platform(type, x, y);
 			platforms.add(platform);
 			
@@ -68,6 +74,8 @@ public class World {
 			if(y > WORLD_HEIGHT / 3 && rand.nextFloat() > 0.8f){
 				Uma uma = new Uma(platform.position.x + rand.nextFloat(), platform.position.y + Uma.UMA_HEIGHT + rand.nextFloat() * 2);
 				umas.add(uma);
+				UmaToge umaToge = new UmaToge(platform.position.x + rand.nextFloat(), platform.position.y + UmaToge.UMA_TOGE_HEIGHT + rand.nextFloat() * 2);
+				umaToges.add(umaToge);
 			}
 			
 			if(rand.nextFloat() > 0.6f){
@@ -86,6 +94,7 @@ public class World {
 		updatePc(deltaTime, accelX);
 		updatePlatforms(deltaTime);
 		updateUmas(deltaTime);
+		updateUmaToges(deltaTime);
 		updateCoins(deltaTime);
 		if(pc.state != PC.PC_STATE_HIT)
 			checkCollisions();
@@ -121,6 +130,14 @@ public class World {
 		}
 	}
 	
+	private void updateUmaToges(float deltaTime){
+		int len = umaToges.size();
+		for(int i = 0; i < len; i++){
+			UmaToge umaToge = umaToges.get(i);
+			umaToge.update(deltaTime);
+		}
+	}
+	
 	private void updateCoins(float deltaTime){
 		int len = coins.size();
 		for(int i = 0; i < len; i++){
@@ -132,6 +149,7 @@ public class World {
 	private void checkCollisions(){
 		checkPlatformCollisions();
 		checkUmaCollisions();
+		checkUmaTogeCollisions();
 		checkItemCollisions();
 		checkCastleCollisions();
 	}
@@ -147,7 +165,7 @@ public class World {
 				if(OverlapTester.overlapRectangles(pc.bounds, platform.bounds)){
 					pc.hitPlatform();
 					listener.jump();
-					if(rand.nextFloat() > 0.5f){
+					if(rand.nextFloat() > 0.5f && platform.state != Platform.PLATFORM_STATE_FIXED){
 						platform.pulverize();
 					}
 					break;
@@ -159,18 +177,26 @@ public class World {
 	private void checkUmaCollisions(){
 		int len = umas.size();
 		for(int i = 0; i < len; i++){
-			Uma uma = umas.get(i);
-			if(OverlapTester.overlapRectangles(uma.bounds, pc.bounds)){
-				if(pc.state == pc.PC_STATE_FALL){
-					pc.hitPlatform();
-					listener.jump();
-				}else{
-					pc.hitUma();
-					listener.hit();					
-				}
+			Uma uma = umas.get(i);						
+			if(OverlapTester.overlapRectangles(uma.bounds, pc.bounds)){								
+				pc.hitPlatform();							
+				listener.jump();							
 			}
 		}
 	}
+	
+	private void checkUmaTogeCollisions(){
+		int len = umaToges.size();
+		for(int i = 0; i < len; i++){
+			UmaToge umaToge = umaToges.get(i);
+			if(	OverlapTester.overlapRectangles(umaToge.bounds, pc.bounds) && pc.state == PC.PC_STATE_JUMP){
+				gravity = new Vector2(0, 0);
+				pc.hitUma();				
+				listener.hit();
+				state = WORLD_STATE_GAME_OVER;
+			}			
+		}				
+	}		
 	
 	private void checkItemCollisions(){
 		int len = coins.size();
@@ -206,7 +232,7 @@ public class World {
 	}
 	
 	private void checkGameOver(){
-		if(heightSoFar - 7.5f > pc.position.y){
+		if(heightSoFar - 8.0f > pc.position.y){
 			state = WORLD_STATE_GAME_OVER;
 		}
 	}

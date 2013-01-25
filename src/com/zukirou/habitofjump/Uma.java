@@ -4,7 +4,7 @@ import com.zukirou.gameFrameWork.DynamicGameObject;
 
 public class Uma extends DynamicGameObject{
 	public static final float UMA_WIDTH = 1;
-	public static final float UMA_HEIGHT = 0.6f;
+	public static final float UMA_HEIGHT = 0.2f;
 	public static final float UMA_VELOCITY = 3f;
 	
 	float stateTime = 0;

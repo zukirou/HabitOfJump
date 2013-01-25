@@ -78,7 +78,11 @@ public class WorldRenderer{
 			if(platform.state == Platform.PLATFORM_STATE_PULVERIZING){
 				keyFrame = Assets.breakingPlatform.getKeyFrame(platform.stateTime, Animation.ANIMATION_NONLOOPING);
 			}
-			batcher.drawSprite(platform.position.x, platform.position.y, 2, 2, keyFrame);
+			if(platform.state == Platform.PLATFORM_STATE_FIXED){
+				batcher.drawSprite(platform.position.x, platform.position.y, 2, 0.5f, Assets.nonBreakPlatform);
+			}else{
+				batcher.drawSprite(platform.position.x, platform.position.y, 2, 2, keyFrame);								
+			}
 		}
 	}
 	
@@ -100,9 +104,15 @@ public class WorldRenderer{
 		int len = world.umas.size();
 		for(int i = 0; i < len; i++){
 			Uma uma = world.umas.get(i);
+			UmaToge umaToge = world.umaToges.get(i);
 			TextureRegion keyFrame = Assets.umaFly.getKeyFrame(uma.stateTime, Animation.ANIMATION_LOOPING);
+			TextureRegion togeKeyFrame = Assets.umaToge.getKeyFrame(umaToge.stateTime, Animation.ANIMATION_LOOPING);
 			float side = uma.velocity.x < 0 ? -1 : 1;
-			batcher.drawSprite(uma.position.x, uma.position.y, side * 1, 1, keyFrame);
+			float toge_side = uma.velocity.x < 0 ? -1 : 1;
+			umaToge.position.x = uma.position.x;
+			umaToge.position.y = uma.position.y - 0.5f;
+			batcher.drawSprite(uma.position.x, uma.position.y, side * 1, 0.5f, keyFrame);
+			batcher.drawSprite(umaToge.position.x, umaToge.position.y, toge_side * 1, 0.5f, togeKeyFrame);
 		}
 	}
 	
