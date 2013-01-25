@@ -33,7 +33,7 @@ public class HighscoresScreen extends GLScreen{
 		batcher = new SpriteBatcher(glGraphics, 100);
 		highScores = new String[5];
 		for(int i = 0; i < 5; i++){
-			highScores[i] = (i + 1) + "D" + Settings.highscores[i];
+			highScores[i] = (i + 1) + ": " + Settings.highscores[i];
 			xOffset = Math.max(highScores[i].length() * Assets.font.glyphWidth, xOffset);
 		}
 		xOffset = 160 - xOffset / 2 + Assets.font.glyphWidth / 2;

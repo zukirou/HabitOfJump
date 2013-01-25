@@ -130,7 +130,7 @@ public class GameScreen extends GLScreen{
 		world.update(deltaTime, game.getInput().getAccelX());
 		if(world.score != lastScore){
 			lastScore = world.score;
-			scoreString = "" + lastScore;
+			scoreString = "score:" + lastScore;
 		}
 		if(world.state == World.WORLD_STATE_NEXT_LEVEL){
 			state = GAME_LEVEL_END;

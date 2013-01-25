@@ -16,7 +16,7 @@ public class World {
 	}
 	
 	public static final float WORLD_WIDTH = 10;
-	public static final float WORLD_HEIGHT = 15 * 20;
+	public static final float WORLD_HEIGHT = 15 * 5;
 	public static final int WORLD_STATE_RUNNING = 0;
 	public static final int WORLD_STATE_NEXT_LEVEL = 1;
 	public static final int WORLD_STATE_GAME_OVER = 2;
@@ -161,8 +161,13 @@ public class World {
 		for(int i = 0; i < len; i++){
 			Uma uma = umas.get(i);
 			if(OverlapTester.overlapRectangles(uma.bounds, pc.bounds)){
-				pc.hitUma();
-				listener.hit();
+				if(pc.state == pc.PC_STATE_FALL){
+					pc.hitPlatform();
+					listener.jump();
+				}else{
+					pc.hitUma();
+					listener.hit();					
+				}
 			}
 		}
 	}
