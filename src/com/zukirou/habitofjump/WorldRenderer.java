@@ -48,6 +48,7 @@ public class WorldRenderer{
 		renderItems();
 		renderUma();
 		renderCastel();
+		renderBoss();
 		batcher.endBatch();
 		gl.glDisable(GL10.GL_BLEND);
 	}
@@ -114,6 +115,13 @@ public class WorldRenderer{
 			batcher.drawSprite(uma.position.x, uma.position.y, side * 1, 0.5f, keyFrame);
 			batcher.drawSprite(umaToge.position.x, umaToge.position.y, toge_side * 1, 0.5f, togeKeyFrame);
 		}
+	}
+	
+	private void renderBoss(){
+		Boss boss = world.boss;
+		TextureRegion keyFrame = Assets.Boss.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);
+		float side = world.boss.velocity.x < 0 ? -1 : 1;
+		batcher.drawSprite(world.boss.position.x, world.boss.position.y, side * 3, 3, keyFrame);
 	}
 	
 	private void renderCastel(){

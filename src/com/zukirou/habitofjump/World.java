@@ -31,7 +31,7 @@ public class World {
 	public Castle castle;
 	public final WorldListener listener;
 	public final Random rand;
-	
+		
 	public float heightSoFar;
 	public int score;
 	public int state;
@@ -42,6 +42,7 @@ public class World {
 	public float umaX;
 	public float umaY;
 	public float becomePulverizer = 0.5f;
+	public Boss boss;
 	
 	public World(WorldListener listener){
 		this.pc = new PC(5, 0);
@@ -51,6 +52,8 @@ public class World {
 		this.umaToges = new ArrayList<UmaToge>();
 		this.coins = new ArrayList<Coin>();
 		this.listener = listener;
+		
+		this.boss = new Boss(WORLD_WIDTH / 2, 13);
 		
 		rand = new Random();
 		generateLevel();
@@ -65,7 +68,7 @@ public class World {
 		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);		
 		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){		
 			switch(roundLevel){
-	/*		
+			/*
 			case 0:
 				platformType = Platform.PLATFORM_TYPE_NONBREAK;
 				platformX = 5;
@@ -115,9 +118,8 @@ public class World {
 					umaToges.add(umaToge);
 				}
 				break;
-				*/
-			case 0:
 
+			case 5:
 				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
 				umaX = rand.nextFloat() * (WORLD_WIDTH - Uma.UMA_WIDTH) + Uma.UMA_WIDTH / 2; 
 				if(y > 0 && y < 20 || y > 30 && y < 50 || y > 60 && y < 70){
@@ -127,10 +129,14 @@ public class World {
 					Uma uma = new Uma(umaX + (rand.nextFloat() * rand.nextFloat() > 0.5f ? 1 : -1), y + Uma.UMA_HEIGHT);// + rand.nextFloat() * 2);
 					umas.add(uma);
 					UmaToge umaToge = new UmaToge(umaX + rand.nextFloat(), y + UmaToge.UMA_TOGE_HEIGHT);// + rand.nextFloat() * 2);
-					umaToges.add(umaToge);
+					umaToges.add(umaToge);					
 				}
 				break;
-				
+			*/
+			case 0:
+//				Boss boss = new Boss((WORLD_WIDTH / 2) + (rand.nextFloat() * rand.nextFloat() > 0.5f ? 1 : -1), 10 + Uma.UMA_HEIGHT);
+
+				break;
 			default:
 				break;
 			}
@@ -188,6 +194,7 @@ public class World {
 		updateUmas(deltaTime);
 		updateUmaToges(deltaTime);
 		updateCoins(deltaTime);
+		updateBoss(deltaTime);
 		if(pc.state != PC.PC_STATE_HIT)
 			checkCollisions();
 		checkGameOver();
@@ -237,6 +244,11 @@ public class World {
 			coin.update(deltaTime);
 		}
 	}
+	
+	private void updateBoss(float deltaTime){
+		boss.update(deltaTime);
+	}
+
 	
 	private void checkCollisions(){
 		checkPlatformCollisions();

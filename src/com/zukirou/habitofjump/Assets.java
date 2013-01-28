@@ -41,6 +41,8 @@ public class Assets{
 	public static Sound coinSound;
 	public static Sound clickSound;
 	
+	public static Animation Boss;
+	
 	public static void load(GLGame game){
 		background = new Texture(game, "background.png");
 		backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
@@ -96,6 +98,13 @@ public class Assets{
 		hitSound = game.getAudio().newSound("damage.ogg");
 		coinSound = game.getAudio().newSound("goin.ogg");
 		clickSound = game.getAudio().newSound("click.ogg");
+		
+		Boss = new Animation(0.2f,	new TextureRegion(items, 192, 96, 96, 96),
+									new TextureRegion(items, 288, 96, 96, 96),
+									new TextureRegion(items, 384, 96, 96, 96),
+									new TextureRegion(items, 288, 96, 96, 96));
+		
+		
 	}
 	
 	public static void reload(){
