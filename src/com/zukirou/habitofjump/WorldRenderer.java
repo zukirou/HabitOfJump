@@ -48,7 +48,10 @@ public class WorldRenderer{
 		renderItems();
 		renderUma();
 		renderCastel();
+		
 		renderBoss();
+//		renderFalluma();
+		
 		batcher.endBatch();
 		gl.glDisable(GL10.GL_BLEND);
 	}
@@ -121,7 +124,23 @@ public class WorldRenderer{
 		Boss boss = world.boss;
 		TextureRegion keyFrame = Assets.Boss.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);
 		float side = world.boss.velocity.x < 0 ? -1 : 1;
-		batcher.drawSprite(world.boss.position.x, world.boss.position.y, side * 3, 3, keyFrame);
+		batcher.drawSprite(world.boss.position.x, world.boss.position.y, side * 4, 4, keyFrame);
+	}
+	
+	private void renderFalluma(){
+		int len = world.umas.size();
+		for(int i = 0; i < len; i++){
+			Uma uma = world.umas.get(i);
+			UmaToge umaToge = world.umaToges.get(i);
+			TextureRegion keyFrame = Assets.umaFly.getKeyFrame(uma.stateTime, Animation.ANIMATION_LOOPING);
+			TextureRegion togeKeyFrame = Assets.umaToge.getKeyFrame(umaToge.stateTime, Animation.ANIMATION_LOOPING);
+			float side = uma.velocity.x < 0 ? -1 : 1;
+			float toge_side = uma.velocity.x < 0 ? -1 : 1;
+			umaToge.position.x = uma.position.x;
+			umaToge.position.y = uma.position.y - 0.5f;
+			batcher.drawSprite(uma.position.x, uma.position.y, side * 1, 0.5f, keyFrame);
+			batcher.drawSprite(umaToge.position.x, umaToge.position.y, side * 1, 0.5f, togeKeyFrame);
+		}
 	}
 	
 	private void renderCastel(){

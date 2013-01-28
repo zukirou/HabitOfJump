@@ -43,6 +43,8 @@ public class World {
 	public float umaY;
 	public float becomePulverizer = 0.5f;
 	public Boss boss;
+	public final List<Uma> fallUmas;
+	public final List<UmaToge> fallUmaToges;
 	
 	public World(WorldListener listener){
 		this.pc = new PC(5, 0);
@@ -52,8 +54,9 @@ public class World {
 		this.umaToges = new ArrayList<UmaToge>();
 		this.coins = new ArrayList<Coin>();
 		this.listener = listener;
-		
-		this.boss = new Boss(WORLD_WIDTH / 2, 13);
+
+		this.fallUmas = new ArrayList<Uma>();
+		this.fallUmaToges = new ArrayList<UmaToge>();
 		
 		rand = new Random();
 		generateLevel();
@@ -118,8 +121,8 @@ public class World {
 					umaToges.add(umaToge);
 				}
 				break;
-
-			case 5:
+*/
+			case 0:
 				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
 				umaX = rand.nextFloat() * (WORLD_WIDTH - Uma.UMA_WIDTH) + Uma.UMA_WIDTH / 2; 
 				if(y > 0 && y < 20 || y > 30 && y < 50 || y > 60 && y < 70){
@@ -132,11 +135,17 @@ public class World {
 					umaToges.add(umaToge);					
 				}
 				break;
-			*/
+			
+			/*
 			case 0:
 //				Boss boss = new Boss((WORLD_WIDTH / 2) + (rand.nextFloat() * rand.nextFloat() > 0.5f ? 1 : -1), 10 + Uma.UMA_HEIGHT);
-
+				boss = new Boss(WORLD_WIDTH / 2, 13);
+				Uma uma = new Uma(umaX + (rand.nextFloat() * rand.nextFloat() > 0.5f ? 1 : -1), y + Uma.UMA_HEIGHT);// + rand.nextFloat() * 2);
+				umas.add(uma);
+				UmaToge umaToge = new UmaToge(umaX + rand.nextFloat(), y + UmaToge.UMA_TOGE_HEIGHT);// + rand.nextFloat() * 2);
+				umaToges.add(umaToge);									
 				break;
+*/				
 			default:
 				break;
 			}
@@ -152,41 +161,6 @@ public class World {
 		castle = new Castle(WORLD_WIDTH / 2, y);
 	}
 
-/*
-		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){
-			int type = rand.nextFloat() > 0.8f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
-			float x = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
-			
-			if(type == Platform.PLATFORM_TYPE_STATIC)				
-				type = rand.nextFloat() > 0.5 ? Platform.PLATFORM_TYPE_STATIC : Platform.PLATFORM_TYPE_NONBREAK;
-			
-			Platform platform = new Platform(type, x, y);
-			platforms.add(platform);
-			
-			if(rand.nextFloat() > 0.9f && type != Platform.PLATFORM_TYPE_MOVING){
-				Spring spring = new Spring(platform.position.x, platform.position.y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
-				springs.add(spring);
-			}
-			
-			if(y > WORLD_HEIGHT / 3 && rand.nextFloat() > 0.8f){
-				Uma uma = new Uma(platform.position.x + rand.nextFloat(), platform.position.y + Uma.UMA_HEIGHT + rand.nextFloat() * 2);
-				umas.add(uma);
-				UmaToge umaToge = new UmaToge(platform.position.x + rand.nextFloat(), platform.position.y + UmaToge.UMA_TOGE_HEIGHT + rand.nextFloat() * 2);
-				umaToges.add(umaToge);
-			}
-			
-			if(rand.nextFloat() > 0.6f){
-				Coin coin = new Coin(platform.position.x + rand.nextFloat(), platform.position.y + Coin.COIN_HEIGHT + rand.nextFloat() * 3);
-				coins.add(coin);
-			}
-			
-			y += (maxJumpHeight - 0.5f);
-			y -= rand.nextFloat() * (maxJumpHeight / 3);
-		}
-		
-		castle = new Castle(WORLD_WIDTH / 2, y);
-	}
-*/	
 	
 	public void update(float deltaTime, float accelX){
 		updatePc(deltaTime, accelX);
@@ -195,6 +169,9 @@ public class World {
 		updateUmaToges(deltaTime);
 		updateCoins(deltaTime);
 		updateBoss(deltaTime);
+		updateFallUmas(deltaTime);
+//		updateFallUmaToges(deltaTime);
+		
 		if(pc.state != PC.PC_STATE_HIT)
 			checkCollisions();
 		checkGameOver();
@@ -247,6 +224,22 @@ public class World {
 	
 	private void updateBoss(float deltaTime){
 		boss.update(deltaTime);
+	}
+
+	private void updateFallUmas(float deltaTime){
+		int len = umas.size();
+		for(int i = 0; i < len; i++){
+			Uma uma = umas.get(i);
+			uma.updateFall(deltaTime);
+		}
+	}
+	
+	private void updateFallUmaToges(float deltaTime){
+		int len = umaToges.size();
+		for(int i = 0; i < len; i++){
+			UmaToge umaToge = umaToges.get(i);
+			umaToge.updateFall(deltaTime);
+		}
 	}
 
 	
