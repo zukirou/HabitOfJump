@@ -36,6 +36,13 @@ public class World {
 	public int score;
 	public int state;
 	
+	public int roundLevel = 0;
+	public int platformType;
+	public float platformX;
+	public float umaX;
+	public float umaY;
+	public float becomePulverizer = 0.5f;
+	
 	public World(WorldListener listener){
 		this.pc = new PC(5, 0);
 		this.platforms = new ArrayList<Platform>();
@@ -55,7 +62,91 @@ public class World {
 	
 	private void generateLevel(){
 		float y = Platform.PLATFORM_HEIGHT / 2;
-		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);
+		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);		
+		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){		
+			switch(roundLevel){
+	/*		
+			case 0:
+				platformType = Platform.PLATFORM_TYPE_NONBREAK;
+				platformX = 5;
+				break;
+				
+			case 1:
+				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
+				platformType = Platform.PLATFORM_TYPE_NONBREAK;
+				if(rand.nextFloat() > 0.6f){
+					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
+					springs.add(spring);					
+				}else{
+					break;					
+				}
+				break;
+
+			case 2:
+				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
+				platformType = rand.nextFloat() > 0.5 ? Platform.PLATFORM_TYPE_STATIC : Platform.PLATFORM_TYPE_NONBREAK;
+				break;
+
+			case 3:
+				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
+				platformType = rand.nextFloat() > 0.5f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
+				becomePulverizer = 0.3f;
+
+				if(rand.nextFloat() > 0.8f){
+					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
+					springs.add(spring);					
+				}else{
+					break;					
+				}
+				break;
+				
+			case 4:
+				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
+				umaX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2; 
+				platformType = rand.nextFloat() > 0.5f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
+				becomePulverizer = 0;
+				if(rand.nextFloat() > 0.5f){
+					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
+					springs.add(spring);					
+				}else{
+					Uma uma = new Uma(umaX + rand.nextFloat(), y + Uma.UMA_HEIGHT + rand.nextFloat() * 2);
+					umas.add(uma);
+					UmaToge umaToge = new UmaToge(umaX + rand.nextFloat(), y + UmaToge.UMA_TOGE_HEIGHT + rand.nextFloat() * 2);
+					umaToges.add(umaToge);
+				}
+				break;
+				*/
+			case 0:
+
+				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
+				umaX = rand.nextFloat() * (WORLD_WIDTH - Uma.UMA_WIDTH) + Uma.UMA_WIDTH / 2; 
+				if(y > 0 && y < 20 || y > 30 && y < 50 || y > 60 && y < 70){
+					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
+					springs.add(spring);
+				}else{
+					Uma uma = new Uma(umaX + (rand.nextFloat() * rand.nextFloat() > 0.5f ? 1 : -1), y + Uma.UMA_HEIGHT);// + rand.nextFloat() * 2);
+					umas.add(uma);
+					UmaToge umaToge = new UmaToge(umaX + rand.nextFloat(), y + UmaToge.UMA_TOGE_HEIGHT);// + rand.nextFloat() * 2);
+					umaToges.add(umaToge);
+				}
+				break;
+				
+			default:
+				break;
+			}
+			if(roundLevel > 0 ){
+				Platform platform = new Platform(platformType, platformX, y);
+				platforms.add(platform);
+			}else{
+				y += (maxJumpHeight - 0.5f);
+				y -= rand.nextFloat() * (maxJumpHeight / 3);
+				
+			}
+		}
+		castle = new Castle(WORLD_WIDTH / 2, y);
+	}
+
+/*
 		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){
 			int type = rand.nextFloat() > 0.8f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
 			float x = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
@@ -89,6 +180,7 @@ public class World {
 		
 		castle = new Castle(WORLD_WIDTH / 2, y);
 	}
+*/	
 	
 	public void update(float deltaTime, float accelX){
 		updatePc(deltaTime, accelX);
@@ -165,7 +257,7 @@ public class World {
 				if(OverlapTester.overlapRectangles(pc.bounds, platform.bounds)){
 					pc.hitPlatform();
 					listener.jump();
-					if(rand.nextFloat() > 0.5f && platform.state != Platform.PLATFORM_STATE_FIXED){
+					if(rand.nextFloat() > becomePulverizer && platform.state != Platform.PLATFORM_STATE_FIXED){
 						platform.pulverize();
 					}
 					break;
@@ -226,7 +318,7 @@ public class World {
 	}
 	
 	private void checkCastleCollisions(){
-		if(OverlapTester.overlapRectangles(castle.bounds, pc.bounds)){
+		if(pc.state == PC.PC_STATE_FALL && OverlapTester.overlapRectangles(castle.bounds, pc.bounds)){
 			state = WORLD_STATE_NEXT_LEVEL;
 		}
 	}

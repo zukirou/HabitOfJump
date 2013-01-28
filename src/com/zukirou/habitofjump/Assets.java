@@ -83,7 +83,8 @@ public class Assets{
 												new TextureRegion(items, 128, 224, 64, 64),
 												new TextureRegion(items, 196, 224, 64, 64));
 		nonBreakPlatform = new TextureRegion(items, 128, 160, 64, 16);
-		font = new Font(items, 224, 0, 16, 16, 20);
+		
+		font = new Font(items, 224, 0, 16, 16, 16);
 		
 		music = game.getAudio().newMusic("bgmDrum.ogg");
 		music.setLooping(true);

@@ -118,6 +118,6 @@ public class WorldRenderer{
 	
 	private void renderCastel(){
 		Castle castle = world.castle;
-		batcher.drawSprite(castle.position.x, castle.position.y, 2, 2, Assets.castle);
+		batcher.drawSprite(castle.position.x, castle.position.y + 0.7f, 2, 2, Assets.castle);
 	}
 }

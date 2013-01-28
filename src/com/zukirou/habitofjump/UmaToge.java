@@ -3,8 +3,8 @@ package com.zukirou.habitofjump;
 import com.zukirou.gameFrameWork.DynamicGameObject;
 
 public class UmaToge extends DynamicGameObject{
-	public static final float UMA_TOGE_WIDTH = 0.5f;
-	public static final float UMA_TOGE_HEIGHT = 0.3f;
+	public static final float UMA_TOGE_WIDTH = 0.3f;
+	public static final float UMA_TOGE_HEIGHT = 0.2f;
 	public static final float UMA_TOGE_VELOCITY = 3f;
 	
 	float stateTime = 0;
