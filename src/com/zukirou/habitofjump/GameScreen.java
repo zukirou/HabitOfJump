@@ -1,15 +1,18 @@
 package com.zukirou.habitofjump;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
 import com.zukirou.gameFrameWork.Game;
 import com.zukirou.gameFrameWork.Input.TouchEvent;
 
+import com.zukirou.game.Framework.gl.Animation;
 import com.zukirou.game.Framework.gl.Camera2D;
 import com.zukirou.game.Framework.gl.FPSCounter;
 import com.zukirou.game.Framework.gl.SpriteBatcher;
+import com.zukirou.game.Framework.gl.TextureRegion;
 
 import com.zukirou.games.impl.GLScreen;
 
@@ -24,7 +27,9 @@ public class GameScreen extends GLScreen{
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
-	
+	static final int GAME_STORY_CLEAR = 5;
+	public Random rand;
+
 	int state;
 	Camera2D guiCam;
 	Vector2 touchPoint;
@@ -66,6 +71,22 @@ public class GameScreen extends GLScreen{
 			public void coin(){
 				Assets.playSound(Assets.coinSound);
 			}
+			
+			@Override
+			public void hitDamage(){
+//				if(rand.nextFloat() < 0.4)
+					Assets.playSound(Assets.hitDamageSound00);
+//				if(rand.nextFloat() > 0.4 && rand.nextFloat() < 0.8)
+//					Assets.playSound(Assets.hitDamageSound01);
+//				if(rand.nextFloat() > 0.8)
+//					Assets.playSound(Assets.hitDamageSound02);
+			}
+			
+			@Override
+			public void bossDead(){
+				Assets.playSound(Assets.bossDeadSound);
+			}
+			
 		};
 		
 		world = new World(worldListener);
@@ -99,6 +120,9 @@ public class GameScreen extends GLScreen{
 			break;
 		case GAME_OVER:
 			updateGameOver();
+			break;
+		case GAME_STORY_CLEAR:
+			updateGameStoryClear();
 			break;
 		}
 	}
@@ -143,6 +167,9 @@ public class GameScreen extends GLScreen{
 				scoreString = "score: " + lastScore;
 			Settings.addScore(lastScore);
 			Settings.save(game.getFileIO());
+		}
+		if(world.state == World.WORLD_STATE_GAME_STORY_CLEAR){
+			state = GAME_STORY_CLEAR;
 		}
 	}
 	
@@ -196,6 +223,19 @@ public class GameScreen extends GLScreen{
 		}
 	}
 	
+	private void updateGameStoryClear(){
+		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
+		int len = touchEvents.size();
+		for(int i = 0; i < len; i++){
+			TouchEvent event = touchEvents.get(i);
+			if(event.type != TouchEvent.TOUCH_UP)
+				continue;
+			World.gravity = new Vector2(0, -8);
+			game.setScreen(new MainMenuScreen(game));
+		}
+	}
+
+	
 	@Override
 	public void present(float deltaTime){
 		GL10 gl = glGraphics.getGL();
@@ -224,6 +264,9 @@ public class GameScreen extends GLScreen{
 			break;
 		case GAME_OVER:
 			presentGameOver();
+			break;
+		case GAME_STORY_CLEAR:
+			presentGameStoryClear();
 			break;
 		}
 		batcher.endBatch();
@@ -260,6 +303,16 @@ public class GameScreen extends GLScreen{
 		batcher.drawSprite(160, 150, 160, 96, Assets.gameOver);
 		float scoreWidth = Assets.font.glyphWidth * scoreString.length();
 		Assets.font.drawText(batcher, scoreString, 160 - scoreWidth / 2, 480 - 20);
+	}
+	
+	private void presentGameStoryClear(){	
+		batcher.beginBatch(Assets.background);
+		batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion);
+		batcher.endBatch();
+		batcher.beginBatch(Assets.items);
+		batcher.drawSprite(144, 100, 32, 32, Assets.girl);
+		batcher.drawSprite(176, 100, 32, 32, Assets.man);
+		batcher.endBatch();
 	}
 	
 	public void pause(){

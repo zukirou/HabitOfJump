@@ -24,7 +24,7 @@ public class WorldRenderer{
 	}
 	
 	public void render(){
-		if(world.pc.position.y > cam.position.y)
+		if(world.pc.position.y > cam.position.y && world.camMovFlag == 0)//カメラ動かしたくないときに使うフラグ
 			cam.position.y = world.pc.position.y;
 		cam.setViewportAndMatrices();
 		renderBackground();
@@ -48,6 +48,8 @@ public class WorldRenderer{
 		renderItems();
 		renderUma();
 		renderCastel();
+		renderUmaFall();
+		renderUmaTogeFix();
 		renderBoss();
 		batcher.endBatch();
 		gl.glDisable(GL10.GL_BLEND);
@@ -118,10 +120,39 @@ public class WorldRenderer{
 	}
 	
 	private void renderBoss(){
-		Boss boss = world.boss;
-		TextureRegion keyFrame = Assets.Boss.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);
-		float side = world.boss.velocity.x < 0 ? -1 : 1;
-		batcher.drawSprite(world.boss.position.x, world.boss.position.y, side * 3, 3, keyFrame);
+		Boss boss = world.boss;		
+		if(boss.state == Boss.BOSS_STATE_DEAD){
+			TextureRegion keyFrame = Assets.bossDead.getKeyFrame(boss.stateTime, Animation.ANIMATION_NONLOOPING);			
+			batcher.drawSprite(boss.position.x, boss.position.y, 3, 3, keyFrame);
+		}else if(boss.state == Boss.BOSS_STATE_ALIVE){		
+			TextureRegion keyFrame = Assets.Boss.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);			
+			float side = boss.velocity.x < 0 ? -1 : 1;						
+			batcher.drawSprite(boss.position.x, boss.position.y, side * 3, 3, keyFrame);			
+		}
+	}
+
+	
+	private void renderUmaFall(){
+		int len = world.umasFall.size();
+		for(int i = 0; i < len; i++){
+			UmaFall umaFall = world.umasFall.get(i);
+			UmaTogeFall umaTogeFall = world.umaTogesFall.get(i);
+			TextureRegion keyFrame = Assets.umaFly.getKeyFrame(umaFall.stateTime, Animation.ANIMATION_LOOPING);
+			TextureRegion togeKeyFrame = Assets.umaToge.getKeyFrame(umaTogeFall.stateTime, Animation.ANIMATION_LOOPING);
+			umaTogeFall.position.x = umaFall.position.x;
+			umaTogeFall.position.y = umaFall.position.y - 0.5f;
+			batcher.drawSprite(umaFall.position.x, umaFall.position.y, 1, 0.5f, keyFrame);
+			batcher.drawSprite(umaTogeFall.position.x, umaTogeFall.position.y, 1, 0.5f, togeKeyFrame);
+		}
+	}
+	
+	private void renderUmaTogeFix(){
+		int len = world.umaTogesFix.size();
+		for(int i = 0; i < len; i++){
+			UmaTogeFix umaTogeFix = world.umaTogesFix.get(i);
+			TextureRegion togeKeyFrame = Assets.umaToge.getKeyFrame(umaTogeFix.stateTime, Animation.ANIMATION_NONLOOPING);
+			batcher.drawSprite(umaTogeFix.position.x, umaTogeFix.position.y, 1, 0.5f, togeKeyFrame);
+		}
 	}
 	
 	private void renderCastel(){

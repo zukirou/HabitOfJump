@@ -12,6 +12,7 @@ public class Assets{
 	public static Texture background;
 	public static TextureRegion backgroundRegion;
 	public static Texture items;
+	
 	public static TextureRegion mainMenu;
 	public static TextureRegion pauseMenu;
 	public static TextureRegion ready;
@@ -41,13 +42,22 @@ public class Assets{
 	public static Sound coinSound;
 	public static Sound clickSound;
 	
+	public static Sound hitDamageSound00;
+	public static Sound hitDamageSound01;
+	public static Sound hitDamageSound02;
+	public static Sound bossDeadSound;
+	
 	public static Animation Boss;
+	public static Animation bossDead;
+	public static TextureRegion man;
+	public static TextureRegion girl;
 	
 	public static void load(GLGame game){
 		background = new Texture(game, "background.png");
 		backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
 		
 		items = new Texture(game, "items.png");
+		
 		mainMenu = new TextureRegion(items, 256, 352, 224, 96);
 		pauseMenu = new TextureRegion(items, 256, 256,224, 96);
 		ready = new TextureRegion(items, 128, 288, 128, 32);
@@ -80,11 +90,30 @@ public class Assets{
 										new TextureRegion(items, 32, 176, 32, 16));
 		
 		platform = new TextureRegion(items, 64, 160, 64, 64);
+		
 		breakingPlatform = new Animation(0.2f,	new TextureRegion(items, 0, 224, 64, 64),
 												new TextureRegion(items, 64, 224, 64, 64),
 												new TextureRegion(items, 128, 224, 64, 64),
 												new TextureRegion(items, 196, 224, 64, 64));
+		
 		nonBreakPlatform = new TextureRegion(items, 128, 160, 64, 16);
+		
+		Boss = new Animation(0.2f,	new TextureRegion(items, 192, 96, 96, 96),
+				new TextureRegion(items, 288, 96, 96, 96),
+				new TextureRegion(items, 384, 96, 96, 96),
+				new TextureRegion(items, 288, 96, 96, 96));
+		
+		bossDead = new Animation(0.2f,	new TextureRegion(items, 480, 0, 96, 96),
+										new TextureRegion(items, 576, 0, 96, 96),
+										new TextureRegion(items, 672, 0, 96, 96),
+										new TextureRegion(items, 768, 0, 96, 96),
+										new TextureRegion(items, 864, 0, 96, 96),
+										new TextureRegion(items, 480, 96, 96, 96),
+										new TextureRegion(items, 576, 96, 96, 96),
+										new TextureRegion(items, 672, 96, 96, 96));
+
+		man = new TextureRegion(items, 960, 0, 32, 32);
+		girl = new TextureRegion(items, 992, 0, 32, 32);
 		
 		font = new Font(items, 224, 0, 16, 16, 16);
 		
@@ -97,13 +126,11 @@ public class Assets{
 		highJumpSound = game.getAudio().newSound("up.ogg");
 		hitSound = game.getAudio().newSound("damage.ogg");
 		coinSound = game.getAudio().newSound("goin.ogg");
+		hitDamageSound00 = game.getAudio().newSound("hitDamage00.ogg");
+		hitDamageSound01 = game.getAudio().newSound("hitDamage01.ogg");
+		hitDamageSound02 = game.getAudio().newSound("hitDamage02.ogg");
+		bossDeadSound = game.getAudio().newSound("bossDead.ogg");		
 		clickSound = game.getAudio().newSound("click.ogg");
-		
-		Boss = new Animation(0.2f,	new TextureRegion(items, 192, 96, 96, 96),
-									new TextureRegion(items, 288, 96, 96, 96),
-									new TextureRegion(items, 384, 96, 96, 96),
-									new TextureRegion(items, 288, 96, 96, 96));
-		
 		
 	}
 	

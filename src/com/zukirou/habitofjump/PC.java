@@ -63,4 +63,10 @@ public class PC extends DynamicGameObject{
 		state = PC_STATE_JUMP;
 		stateTime = 0;
 	}
+	
+	public void hitBoss(){
+		velocity.y = - PC_JUMP_VELOCITY * 1.5f;
+		state = PC_STATE_FALL;
+		stateTime = 0;		
+	}
 }
