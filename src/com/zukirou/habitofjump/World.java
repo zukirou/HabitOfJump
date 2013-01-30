@@ -15,8 +15,6 @@ public class World {
 		public void highJump();
 		public void hit();
 		public void coin();
-		public void hitDamage();
-		public void bossDead();
 	}
 	
 	public static final float WORLD_WIDTH = 10;
@@ -24,7 +22,7 @@ public class World {
 	public static final int WORLD_STATE_RUNNING = 0;
 	public static final int WORLD_STATE_NEXT_LEVEL = 1;
 	public static final int WORLD_STATE_GAME_OVER = 2;
-	public static final int WORLD_STATE_GAME_STORY_CLEAR = 3;
+	public static final int WORLD_STATE_GO_BOSS = 3;
 	public static Vector2 gravity = new Vector2(0, -12);
 	
 	public final PC pc;
@@ -48,15 +46,9 @@ public class World {
 	public float umaFallX;
 	public float umaFallY;
 	public float becomePulverizer = 0.5f;
-	public Boss boss;
 	public final List<UmaFall> umasFall;
 	public final List<UmaTogeFall> umaTogesFall;
 	public final List<UmaTogeFix> umaTogesFix;
-	
-	public int camMovFlag = 0;
-	public int blankGround = 0;
-	public int bossHp = Boss.BOSS_HP;
-
 	
 	public World(WorldListener listener){
 		this.pc = new PC(5, 0);
@@ -66,14 +58,12 @@ public class World {
 		this.umaToges = new ArrayList<UmaToge>();
 		this.coins = new ArrayList<Coin>();
 		this.listener = listener;
-		this.boss = new Boss(WORLD_WIDTH / 2, 13);			
 		this.umasFall = new ArrayList<UmaFall>();
 		this.umaTogesFall = new ArrayList<UmaTogeFall>();
 		this.umaTogesFix = new ArrayList<UmaTogeFix>();
 				
 		rand = new Random();
 		generateLevel();
-
 		
 		this.heightSoFar = 0;
 		this.score = 0;
@@ -149,15 +139,6 @@ public class World {
 				}
 				break;
 				
-			case 6:
-				camMovFlag = 1;
-				blankGround = 1;
-				for(int i = 0; i < 15; i++){
-					UmaTogeFix umaTogeFix = new UmaTogeFix(i, 14.9f);
-					umaTogesFix.add(umaTogeFix);
-				}
-				break;
-				
 			default:
 				break;
 			}
@@ -181,14 +162,12 @@ public class World {
 		updateUmas(deltaTime);
 		updateUmaToges(deltaTime);
 		updateCoins(deltaTime);
-		updateBoss(deltaTime);
 		updateUmasFall(deltaTime);
 		updateUmaTogesFall(deltaTime);
 		
 		if(pc.state != PC.PC_STATE_HIT)
 			checkCollisions();
-		if(blankGround == 0)
-			checkGameOver();
+		checkGameOver();
 	}
 	
 	private void updatePc(float deltaTime, float accelX){
@@ -236,35 +215,6 @@ public class World {
 		}
 	}
 	
-	private void updateBoss(float deltaTime){
-			boss.update(deltaTime);
-			
-			if(boss.position.x > 1.5 && boss.position.x < 1.5 + deltaTime){
-				UmaFall umaFall= new UmaFall(2, 13);
-				umasFall.add(umaFall);
-				UmaTogeFall umaTogeFall = new UmaTogeFall(2, 13);
-				umaTogesFall.add(umaTogeFall);																	
-			}
-			
-			if(boss.position.x > 5 && boss.position.x < 5 + deltaTime){
-				UmaFall umaFall= new UmaFall(5, 13);
-				umasFall.add(umaFall);
-				UmaTogeFall umaTogeFall = new UmaTogeFall(5, 13);
-				umaTogesFall.add(umaTogeFall);													
-			}
-			
-			if(boss.position.x > 8 - deltaTime && boss.position.x < 8){
-				UmaFall umaFall= new UmaFall(8, 13);
-				umasFall.add(umaFall);
-				UmaTogeFall umaTogeFall = new UmaTogeFall(8, 13);
-				umaTogesFall.add(umaTogeFall);													
-			}	
-			if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){			
-				state = WORLD_STATE_GAME_STORY_CLEAR;
-				roundLevel = 0;
-			}
-	}
-
 	private void updateUmasFall(float deltaTime){
 		int len = umasFall.size();
 		for(int i = 0; i < len; i++){
@@ -299,7 +249,6 @@ public class World {
 		checkUmaTogeCollisions();
 		checkItemCollisions();
 		checkCastleCollisions();		
-		checkBossCollisions();
 		checkUmaFallCollisions();
 		checkUmaTogeFallCollisions();
 		checkUmaTogeFixCollisions();
@@ -385,20 +334,6 @@ public class World {
 		}				
 	}		
 
-	private void checkBossCollisions(){
-		if(OverlapTester.overlapRectangles(boss.bounds, pc.bounds)){										
-			pc.hitBoss();			
-			listener.hitDamage();			
-			bossHp -= 60;			
-			if(bossHp < 0){
-				listener.bossDead();																				
-				boss.dead();
-//				camMovFlag = 0;
-//				blankGround = 0;
-			}
-		}					
-	}
-
 	private void checkItemCollisions(){
 		int len = coins.size();
 		for(int i = 0; i < len; i++){
@@ -429,7 +364,11 @@ public class World {
 	private void checkCastleCollisions(){
 		if(pc.state == PC.PC_STATE_FALL && OverlapTester.overlapRectangles(castle.bounds, pc.bounds)){
 			roundLevel ++;
-			state = WORLD_STATE_NEXT_LEVEL;
+			if(roundLevel > 5){
+				state = WORLD_STATE_GO_BOSS;
+			}else{
+				state = WORLD_STATE_NEXT_LEVEL;				
+			}
 		}
 	}
 	
