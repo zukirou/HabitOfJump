@@ -24,7 +24,7 @@ public class WorldRenderer{
 	}
 	
 	public void render(){
-		if(world.pc.position.y > cam.position.y)
+		if(world.pc.position.y > cam.position.y && world.camMovFlag == 0)//カメラ動かしたくないときに使うフラグ
 			cam.position.y = world.pc.position.y;
 		cam.setViewportAndMatrices();
 		renderBackground();
@@ -50,6 +50,7 @@ public class WorldRenderer{
 		renderCastel();
 		renderUmaFall();
 		renderUmaTogeFix();
+		renderBoss();		
 		batcher.endBatch();			
 		gl.glDisable(GL10.GL_BLEND);
 	}
@@ -117,6 +118,19 @@ public class WorldRenderer{
 			batcher.drawSprite(umaToge.position.x, umaToge.position.y, toge_side * 1, 0.5f, togeKeyFrame);
 		}
 	}
+	
+	private void renderBoss(){
+		Boss boss = world.boss;		
+		if(boss.state == Boss.BOSS_STATE_DEAD){
+			TextureRegion keyFrame = Assets.bossDead.getKeyFrame(boss.stateTime, Animation.ANIMATION_NONLOOPING);			
+			batcher.drawSprite(boss.position.x, boss.position.y, 3, 3, keyFrame);
+		}else if(boss.state == Boss.BOSS_STATE_ALIVE){		
+			TextureRegion keyFrame = Assets.Boss.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);			
+			float side = boss.velocity.x < 0 ? -1 : 1;						
+			batcher.drawSprite(boss.position.x, boss.position.y, side * 3, 3, keyFrame);			
+		}
+	}
+
 	
 	private void renderUmaFall(){
 		int len = world.umasFall.size();

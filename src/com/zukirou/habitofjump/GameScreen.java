@@ -20,7 +20,6 @@ import com.zukirou.game.Framework.math.OverlapTester;
 import com.zukirou.game.Framework.math.Rectangle;
 import com.zukirou.game.Framework.math.Vector2;
 import com.zukirou.habitofjump.World.WorldListener;
-import com.zukirou.habitofjump.WorldBoss.WorldBossListener;
 
 public class GameScreen extends GLScreen{
 	static final int GAME_READY = 0;
@@ -28,7 +27,7 @@ public class GameScreen extends GLScreen{
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
-	static final int GAME_GO_BOSS = 5;
+	static final int GAME_STORY_CLEAR = 5;
 	public Random rand;
 
 	int state;
@@ -36,11 +35,8 @@ public class GameScreen extends GLScreen{
 	Vector2 touchPoint;
 	SpriteBatcher batcher;
 	World world;
-	WorldBoss worldBoss;
 	WorldListener worldListener;
-	WorldBossListener worldBossListener;
 	WorldRenderer renderer;
-	WorldBossRenderer rendererWorldBoss;
 	Rectangle pauseBounds;
 	Rectangle resumeBounds;
 	Rectangle quitBounds;
@@ -75,7 +71,22 @@ public class GameScreen extends GLScreen{
 			public void coin(){
 				Assets.playSound(Assets.coinSound);
 			}
-						
+			
+			@Override
+			public void hitDamage(){
+//				if(rand.nextFloat() < 0.4)
+					Assets.playSound(Assets.hitDamageSound00);
+//				if(rand.nextFloat() > 0.4 && rand.nextFloat() < 0.8)
+//					Assets.playSound(Assets.hitDamageSound01);
+//				if(rand.nextFloat() > 0.8)
+//					Assets.playSound(Assets.hitDamageSound02);
+			}
+			
+			@Override
+			public void bossDead(){
+				Assets.playSound(Assets.bossDeadSound);
+			}
+			
 		};
 		
 		world = new World(worldListener);
@@ -110,11 +121,10 @@ public class GameScreen extends GLScreen{
 		case GAME_OVER:
 			updateGameOver();
 			break;
-		case GAME_GO_BOSS:
-			updateGoBoss();
+		case GAME_STORY_CLEAR:
+			updateGameStoryClear();
 			break;
 		}
-		
 	}
 	
 	private void updateReady(){
@@ -149,10 +159,6 @@ public class GameScreen extends GLScreen{
 		if(world.state == World.WORLD_STATE_NEXT_LEVEL){
 			state = GAME_LEVEL_END;
 		}
-		if(world.state == World.WORLD_STATE_GO_BOSS){
-			state = GAME_GO_BOSS;
-		}
-		
 		if(world.state == World.WORLD_STATE_GAME_OVER){
 			state = GAME_OVER;
 			for(int i = 0; i < 5; i++){
@@ -161,11 +167,12 @@ public class GameScreen extends GLScreen{
 				else
 					scoreString = "score: " + lastScore;				
 			}
-			
 			int roundLevel = World.roundLevel;
-			
 			Settings.addScore(lastScore, roundLevel);
 			Settings.save(game.getFileIO());
+		}
+		if(world.state == World.WORLD_STATE_GAME_STORY_CLEAR){
+			state = GAME_STORY_CLEAR;
 		}
 	}
 	
@@ -207,20 +214,19 @@ public class GameScreen extends GLScreen{
 		}
 	}
 	
-	private void updateGoBoss(){
+	private void updateGameOver(){
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 		int len = touchEvents.size();
 		for(int i = 0; i < len; i++){
 			TouchEvent event = touchEvents.get(i);
 			if(event.type != TouchEvent.TOUCH_UP)
 				continue;
-			worldBoss = new WorldBoss(worldBossListener);
-			rendererWorldBoss = new WorldBossRenderer(glGraphics, batcher, worldBoss);
-			state = GAME_READY;
+			World.gravity = new Vector2(0, -12);
+			game.setScreen(new MainMenuScreen(game));
 		}
 	}
 	
-	private void updateGameOver(){
+	private void updateGameStoryClear(){
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
 		int len = touchEvents.size();
 		for(int i = 0; i < len; i++){
@@ -230,6 +236,7 @@ public class GameScreen extends GLScreen{
 			game.setScreen(new MainMenuScreen(game));
 		}
 	}
+
 	
 	@Override
 	public void present(float deltaTime){
@@ -259,6 +266,9 @@ public class GameScreen extends GLScreen{
 			break;
 		case GAME_OVER:
 			presentGameOver();
+			break;
+		case GAME_STORY_CLEAR:
+			presentGameStoryClear();
 			break;
 		}
 		batcher.endBatch();
@@ -298,7 +308,17 @@ public class GameScreen extends GLScreen{
 		float scoreWidth = Assets.font.glyphWidth * scoreString.length();
 		Assets.font.drawText(batcher, scoreString, 160 - scoreWidth / 2, 480 - 20);
 	}
-		
+	
+	private void presentGameStoryClear(){	
+		batcher.beginBatch(Assets.background);
+		batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion);
+		batcher.endBatch();
+		batcher.beginBatch(Assets.items);
+		batcher.drawSprite(144, 100, 32, 32, Assets.girl);
+		batcher.drawSprite(176, 100, 32, 32, Assets.man);
+		batcher.endBatch();
+	}
+	
 	public void pause(){
 		if(state == GAME_RUNNING)
 			state = GAME_PAUSED;
