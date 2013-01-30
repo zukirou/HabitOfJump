@@ -15,6 +15,7 @@ public class WorldRenderer{
 	World world;
 	Camera2D cam;
 	SpriteBatcher batcher;
+	Boss boss;
 	
 	public WorldRenderer(GLGraphics glGraphics, SpriteBatcher batcher, World world){
 		this.glGraphics = glGraphics;
@@ -48,9 +49,9 @@ public class WorldRenderer{
 		renderItems();
 		renderUma();
 		renderCastel();
-		renderUmaFall();
-		renderUmaTogeFix();
-		renderBoss();		
+		renderBoss();				
+		renderUmaFall();		
+		renderUmaTogeFix();			
 		batcher.endBatch();			
 		gl.glDisable(GL10.GL_BLEND);
 	}
@@ -133,16 +134,19 @@ public class WorldRenderer{
 
 	
 	private void renderUmaFall(){
-		int len = world.umasFall.size();
-		for(int i = 0; i < len; i++){
-			UmaFall umaFall = world.umasFall.get(i);
-			UmaTogeFall umaTogeFall = world.umaTogesFall.get(i);
-			TextureRegion keyFrame = Assets.umaFly.getKeyFrame(umaFall.stateTime, Animation.ANIMATION_LOOPING);
-			TextureRegion togeKeyFrame = Assets.umaToge.getKeyFrame(umaTogeFall.stateTime, Animation.ANIMATION_LOOPING);
-			umaTogeFall.position.x = umaFall.position.x;
-			umaTogeFall.position.y = umaFall.position.y - 0.5f;
-			batcher.drawSprite(umaFall.position.x, umaFall.position.y, 1, 0.5f, keyFrame);
-			batcher.drawSprite(umaTogeFall.position.x, umaTogeFall.position.y, 1, 0.5f, togeKeyFrame);
+		Boss boss = world.boss;
+		if(boss.state == Boss.BOSS_STATE_ALIVE){
+			int len = world.umasFall.size();
+			for(int i = 0; i < len; i++){
+				UmaFall umaFall = world.umasFall.get(i);
+				UmaTogeFall umaTogeFall = world.umaTogesFall.get(i);
+				TextureRegion keyFrame = Assets.umaFly.getKeyFrame(umaFall.stateTime, Animation.ANIMATION_LOOPING);
+				TextureRegion togeKeyFrame = Assets.umaToge.getKeyFrame(umaTogeFall.stateTime, Animation.ANIMATION_LOOPING);
+				umaTogeFall.position.x = umaFall.position.x;
+				umaTogeFall.position.y = umaFall.position.y - 0.5f;
+				batcher.drawSprite(umaFall.position.x, umaFall.position.y, 1, 0.5f, keyFrame);
+				batcher.drawSprite(umaTogeFall.position.x, umaTogeFall.position.y, 1, 0.5f, togeKeyFrame);
+			}			
 		}
 	}
 	

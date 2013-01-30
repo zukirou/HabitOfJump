@@ -152,6 +152,7 @@ public class GameScreen extends GLScreen{
 		}
 		
 		world.update(deltaTime, game.getInput().getAccelX());
+		
 		if(world.score != lastScore){
 			lastScore = world.score;
 			scoreString = "score:" + lastScore;
@@ -233,6 +234,10 @@ public class GameScreen extends GLScreen{
 			TouchEvent event = touchEvents.get(i);
 			if(event.type != TouchEvent.TOUCH_UP)
 				continue;
+			World.roundLevel = 0;
+			World.camMovFlag = 0;
+			World.blankGround = 0;
+
 			game.setScreen(new MainMenuScreen(game));
 		}
 	}
@@ -309,7 +314,7 @@ public class GameScreen extends GLScreen{
 		Assets.font.drawText(batcher, scoreString, 160 - scoreWidth / 2, 480 - 20);
 	}
 	
-	private void presentGameStoryClear(){	
+	private void presentGameStoryClear(){
 		batcher.beginBatch(Assets.background);
 		batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion);
 		batcher.endBatch();

@@ -53,8 +53,8 @@ public class World {
 	public final List<UmaTogeFall> umaTogesFall;
 	public final List<UmaTogeFix> umaTogesFix;
 	
-	public int camMovFlag = 0;
-	public int blankGround = 0;
+	static int camMovFlag = 0;
+	static int blankGround = 0;
 	public int bossHp = Boss.BOSS_HP;
 
 	
@@ -83,7 +83,8 @@ public class World {
 	private void generateLevel(){
 		float y = Platform.PLATFORM_HEIGHT / 2;
 		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);		
-		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){		
+		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){	
+//			roundLevel = 6;//ƒ‰ƒEƒ“ƒh’²®—p
 			switch(roundLevel){
 			case 0:
 				platformType = Platform.PLATFORM_TYPE_NONBREAK;
@@ -93,7 +94,7 @@ public class World {
 			case 1:
 				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
 				platformType = Platform.PLATFORM_TYPE_NONBREAK;
-				if(rand.nextFloat() > 0.6f){
+				if(rand.nextFloat() > 0.6f && y < 19){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);					
 				}else{
@@ -111,7 +112,7 @@ public class World {
 				platformType = rand.nextFloat() > 0.5f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
 				becomePulverizer = 0.3f;
 
-				if(rand.nextFloat() > 0.8f){
+				if(rand.nextFloat() > 0.8f && y < 70){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);					
 				}else{
@@ -124,21 +125,23 @@ public class World {
 				umaX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2; 
 				platformType = rand.nextFloat() > 0.5f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
 				becomePulverizer = 0;
-				if(rand.nextFloat() > 0.5f){
+				if(rand.nextFloat() > 0.5f && y < 70){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);					
 				}else{
-					Uma uma = new Uma(umaX + rand.nextFloat(), y + Uma.UMA_HEIGHT + rand.nextFloat() * 2);
-					umas.add(uma);
-					UmaToge umaToge = new UmaToge(umaX + rand.nextFloat(), y + UmaToge.UMA_TOGE_HEIGHT + rand.nextFloat() * 2);
-					umaToges.add(umaToge);
+					if(y > 20){
+						Uma uma = new Uma(umaX + rand.nextFloat(), y + Uma.UMA_HEIGHT + rand.nextFloat() * 2);
+						umas.add(uma);
+						UmaToge umaToge = new UmaToge(umaX + rand.nextFloat(), y + UmaToge.UMA_TOGE_HEIGHT + rand.nextFloat() * 2);
+						umaToges.add(umaToge);						
+					}
 				}
 				break;
 
 			case 5:
 				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
 				umaX = rand.nextFloat() * (WORLD_WIDTH - Uma.UMA_WIDTH) + Uma.UMA_WIDTH / 2; 
-				if(y > 0 && y < 20 || y > 30 && y < 50 || y > 60 && y < 70){
+				if(y > 0 && y < 20 || y > 30 && y < 50 || y > 60 && y < 65){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);
 				}else{
@@ -152,6 +155,7 @@ public class World {
 			case 6:
 				camMovFlag = 1;
 				blankGround = 1;
+				boss.state = Boss.BOSS_STATE_ALIVE;
 				for(int i = 0; i < 15; i++){
 					UmaTogeFix umaTogeFix = new UmaTogeFix(i, 14.9f);
 					umaTogesFix.add(umaTogeFix);
@@ -181,9 +185,11 @@ public class World {
 		updateUmas(deltaTime);
 		updateUmaToges(deltaTime);
 		updateCoins(deltaTime);
-		updateBoss(deltaTime);
-		updateUmasFall(deltaTime);
-		updateUmaTogesFall(deltaTime);
+		if(boss.state == Boss.BOSS_STATE_ALIVE){
+			updateBoss(deltaTime);
+			updateUmasFall(deltaTime);
+			updateUmaTogesFall(deltaTime);			
+		}
 		
 		if(pc.state != PC.PC_STATE_HIT)
 			checkCollisions();
@@ -258,11 +264,12 @@ public class World {
 				umasFall.add(umaFall);
 				UmaTogeFall umaTogeFall = new UmaTogeFall(8, 13);
 				umaTogesFall.add(umaTogeFall);													
-			}	
+			}
+			
 			if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){			
 				state = WORLD_STATE_GAME_STORY_CLEAR;
-				roundLevel = 0;
 			}
+			
 	}
 
 	private void updateUmasFall(float deltaTime){
@@ -298,11 +305,14 @@ public class World {
 		checkUmaCollisions();
 		checkUmaTogeCollisions();
 		checkItemCollisions();
-		checkCastleCollisions();		
-		checkBossCollisions();
-		checkUmaFallCollisions();
-		checkUmaTogeFallCollisions();
-		checkUmaTogeFixCollisions();
+		checkCastleCollisions();
+		if(boss.state == Boss.BOSS_STATE_ALIVE){
+			checkBossCollisions();
+			checkUmaFallCollisions();
+			checkUmaTogeFallCollisions();
+			checkUmaTogeFixCollisions();			
+		}
+
 	}
 	
 	private void checkPlatformCollisions(){
@@ -344,6 +354,7 @@ public class World {
 				gravity = new Vector2(0, 0);
 				pc.hitUma();				
 				listener.hit();
+				state = WORLD_STATE_GAME_OVER;
 			}			
 		}				
 	}		
@@ -389,12 +400,10 @@ public class World {
 		if(OverlapTester.overlapRectangles(boss.bounds, pc.bounds)){										
 			pc.hitBoss();			
 			listener.hitDamage();			
-			bossHp -= 60;			
+			bossHp -= 60;
 			if(bossHp < 0){
 				listener.bossDead();																				
 				boss.dead();
-//				camMovFlag = 0;
-//				blankGround = 0;
 			}
 		}					
 	}
