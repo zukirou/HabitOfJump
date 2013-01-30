@@ -161,11 +161,14 @@ public class GameScreen extends GLScreen{
 		}
 		if(world.state == World.WORLD_STATE_GAME_OVER){
 			state = GAME_OVER;
-			if(lastScore >= Settings.highscores[4])
-				scoreString = "new highscore: " + lastScore;
-			else
-				scoreString = "score: " + lastScore;
-			Settings.addScore(lastScore);
+			for(int i = 0; i < 5; i++){
+				if(lastScore >= Settings.highscores[i])
+					scoreString = "new highscore: " + lastScore;
+				else
+					scoreString = "score: " + lastScore;				
+			}
+			int roundLevel = World.roundLevel;
+			Settings.addScore(lastScore, roundLevel);
 			Settings.save(game.getFileIO());
 		}
 		if(world.state == World.WORLD_STATE_GAME_STORY_CLEAR){
@@ -230,7 +233,6 @@ public class GameScreen extends GLScreen{
 			TouchEvent event = touchEvents.get(i);
 			if(event.type != TouchEvent.TOUCH_UP)
 				continue;
-			World.gravity = new Vector2(0, -8);
 			game.setScreen(new MainMenuScreen(game));
 		}
 	}
@@ -281,12 +283,14 @@ public class GameScreen extends GLScreen{
 	}
 	
 	private void presentRunning(){
-		batcher.drawSprite(320 - 32, 480 - 32, 64, 64, Assets.pause);
+		batcher.drawSprite(320 - 10, 480, 10, 40, Assets.resume);
 		Assets.font.drawText(batcher, scoreString, 16, 480 - 20);
 	}
 	
 	private void presentPaused(){
-		batcher.drawSprite(160, 240, 192, 96, Assets.pauseMenu);
+		batcher.drawSprite(160, 240, 113, 24, Assets.resume);
+		batcher.drawSprite(160, 190, 70, 24, Assets.quit);
+		
 		Assets.font.drawText(batcher, scoreString, 16, 480 - 20);
 	}
 	

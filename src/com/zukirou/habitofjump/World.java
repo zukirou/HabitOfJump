@@ -40,8 +40,7 @@ public class World {
 	public float heightSoFar;
 	public int score;
 	public int state;
-	
-	public int roundLevel = 0;
+	static int roundLevel;
 	public int platformType;
 	public float platformX;
 	public float umaX;
@@ -67,13 +66,14 @@ public class World {
 		this.umaToges = new ArrayList<UmaToge>();
 		this.coins = new ArrayList<Coin>();
 		this.listener = listener;
-		
+		this.boss = new Boss(WORLD_WIDTH / 2, 13);			
 		this.umasFall = new ArrayList<UmaFall>();
 		this.umaTogesFall = new ArrayList<UmaTogeFall>();
 		this.umaTogesFix = new ArrayList<UmaTogeFix>();
 				
 		rand = new Random();
 		generateLevel();
+
 		
 		this.heightSoFar = 0;
 		this.score = 0;
@@ -85,7 +85,6 @@ public class World {
 		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);		
 		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){		
 			switch(roundLevel){
-			/*
 			case 0:
 				platformType = Platform.PLATFORM_TYPE_NONBREAK;
 				platformX = 5;
@@ -149,11 +148,10 @@ public class World {
 					umaToges.add(umaToge);					
 				}
 				break;
-			*/
-			case 0:
+				
+			case 6:
 				camMovFlag = 1;
 				blankGround = 1;
-				boss = new Boss(WORLD_WIDTH / 2, 13);
 				for(int i = 0; i < 15; i++){
 					UmaTogeFix umaTogeFix = new UmaTogeFix(i, 14.9f);
 					umaTogesFix.add(umaTogeFix);
@@ -163,7 +161,7 @@ public class World {
 			default:
 				break;
 			}
-			if(roundLevel > 0 ){// < 5
+			if(roundLevel < 5 ){//‚T‚©‚ç‘«ê‚Å‚È‚¢B
 				Platform platform = new Platform(platformType, platformX, y);
 				platforms.add(platform);
 				y += (maxJumpHeight - 0.5f);
@@ -173,9 +171,7 @@ public class World {
 				y -= rand.nextFloat() * (maxJumpHeight / 3);
 			}
 		}
-//		if(roundLevel > 0){// > 4
-			castle = new Castle(WORLD_WIDTH / 2, y);			
-//		}
+			castle = new Castle(WORLD_WIDTH / 2, y);
 	}
 
 	
@@ -265,6 +261,7 @@ public class World {
 			}	
 			if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){			
 				state = WORLD_STATE_GAME_STORY_CLEAR;
+				roundLevel = 0;
 			}
 	}
 
@@ -301,8 +298,7 @@ public class World {
 		checkUmaCollisions();
 		checkUmaTogeCollisions();
 		checkItemCollisions();
-		checkCastleCollisions();
-		
+		checkCastleCollisions();		
 		checkBossCollisions();
 		checkUmaFallCollisions();
 		checkUmaTogeFallCollisions();
@@ -432,6 +428,7 @@ public class World {
 	
 	private void checkCastleCollisions(){
 		if(pc.state == PC.PC_STATE_FALL && OverlapTester.overlapRectangles(castle.bounds, pc.bounds)){
+			roundLevel ++;
 			state = WORLD_STATE_NEXT_LEVEL;
 		}
 	}

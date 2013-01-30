@@ -12,6 +12,7 @@ public class Settings{
 	public static boolean soundEnabled = true;
 	public final static int[] highscores = new int[] {100, 80, 50, 30, 10};
 	public final static String file = ".hoj";
+	public static int currentRound = 0;
 	
 	public static void load(FileIO files){
 		BufferedReader in = null;
@@ -21,6 +22,8 @@ public class Settings{
 			for(int i = 0; i < 5; i++){
 				highscores[i] = Integer.parseInt(in.readLine());
 			}
+			currentRound = Integer.parseInt(in.readLine());
+			
 		}catch(IOException e){
 			
 		}catch(NumberFormatException e){
@@ -45,6 +48,7 @@ public class Settings{
 				out.write(Integer.toString(highscores[i]));
 				out.write("/n");
 			}
+			out.write(Integer.toString(currentRound));
 		}catch(IOException e){
 			
 		}finally{
@@ -57,7 +61,10 @@ public class Settings{
 		}
 	}
 	
-	public static void addScore(int score){
+	public static void addScore(int score, int round){
+		if(currentRound <= round)
+			currentRound = round;
+	
 		for(int i = 0; i < 5; i++){
 			if(highscores[i] < score){
 				for(int j = 4; j > 1; j--)
@@ -65,7 +72,7 @@ public class Settings{
 				highscores[i] = score;
 				break;	
 			}	
-		}	
+		}
 	}
 	
 }

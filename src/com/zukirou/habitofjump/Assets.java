@@ -13,16 +13,24 @@ public class Assets{
 	public static TextureRegion backgroundRegion;
 	public static Texture items;
 	
-	public static TextureRegion mainMenu;
-	public static TextureRegion pauseMenu;
+	public static TextureRegion logo;
+	public static TextureRegion mainMenuStart;
+	public static TextureRegion mainMenuStartPush;
+	public static TextureRegion mainMenuEndurance;
+	public static TextureRegion mainMenuEndurancePush;
+	public static TextureRegion mainMenuScoreRecord;
+	public static TextureRegion mainMenuScoreRecordPush;
+	
+	
+	
 	public static TextureRegion ready;
 	public static TextureRegion gameOver;
 	public static TextureRegion highScoresRegion;
-	public static TextureRegion logo;
 	public static TextureRegion soundOn;
 	public static TextureRegion soundOff;
 	public static TextureRegion arrow;
-	public static TextureRegion pause;
+	public static TextureRegion resume;
+	public static TextureRegion quit;
 	public static TextureRegion spring;
 	public static TextureRegion castle;
 	public static Animation coinAnim;
@@ -58,16 +66,23 @@ public class Assets{
 		
 		items = new Texture(game, "items.png");
 		
-		mainMenu = new TextureRegion(items, 256, 352, 224, 96);
-		pauseMenu = new TextureRegion(items, 256, 256,224, 96);
+		logo = new TextureRegion(items, 0, 672, 320, 352);
+		mainMenuStart = new TextureRegion(items, 0, 288, 146, 40);
+		mainMenuStartPush = new TextureRegion(items, 147, 288, 146, 40);
+		mainMenuEndurance = new TextureRegion(items, 0, 335, 182, 42);
+		mainMenuEndurancePush = new TextureRegion(items, 205, 335, 182, 42);
+		mainMenuScoreRecord = new TextureRegion(items, 0, 384, 155, 42);
+		mainMenuScoreRecordPush = new TextureRegion(items, 173, 384, 155, 42);
+		
 		ready = new TextureRegion(items, 128, 288, 128, 32);
 		gameOver = new TextureRegion(items, 0, 288, 128, 64);
 		highScoresRegion = new TextureRegion(Assets.items, 256, 384, 224, 32);
-		logo = new TextureRegion(items, 0, 352, 256, 128);
 		soundOff = new TextureRegion(items, 0, 0, 64, 64);
 		soundOn = new TextureRegion(items, 64, 0, 64, 64);
 		arrow = new TextureRegion(items, 0, 64, 64, 64);
-		pause = new TextureRegion(items, 256, 256, 224, 96);
+		
+		resume = new TextureRegion(items, 0, 448, 113, 24);
+		quit = new TextureRegion(items, 128, 448, 70, 25);
 		
 		spring = new TextureRegion(items, 128, 0, 32, 32);
 		castle = new TextureRegion(items, 128, 64, 64, 64);

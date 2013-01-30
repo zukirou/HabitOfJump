@@ -50,8 +50,8 @@ public class WorldRenderer{
 		renderCastel();
 		renderUmaFall();
 		renderUmaTogeFix();
-		renderBoss();
-		batcher.endBatch();
+		renderBoss();		
+		batcher.endBatch();			
 		gl.glDisable(GL10.GL_BLEND);
 	}
 	

@@ -23,8 +23,8 @@ public class MainMenuScreen extends GLScreen{
 	SpriteBatcher batcher;
 	Rectangle soundBounds;
 	Rectangle playBounds;
-	Rectangle highscoresBounds;
-	Rectangle helpBounds;
+	Rectangle enduranceBounds;
+	Rectangle recordBounds;
 	Vector2 touchPoint;
 	
 	public MainMenuScreen(Game game){
@@ -34,11 +34,11 @@ public class MainMenuScreen extends GLScreen{
 		
 		soundBounds = new Rectangle(0, 0, 64, 64);
 
-		playBounds = new Rectangle(16 - 150, 200 + 18, 300, 36);
+		playBounds = new Rectangle(87, 185, 146, 40);
 
-		highscoresBounds = new Rectangle(160 - 150, 200 - 18, 300, 36);
+		enduranceBounds = new Rectangle(87, 135, 146, 40);
 		
-		helpBounds = new Rectangle(160 - 150, 200 - 18 - 36, 300, 36);
+		recordBounds = new Rectangle(87, 85, 146, 40);
 		
 		touchPoint = new Vector2();
 	}
@@ -55,18 +55,21 @@ public class MainMenuScreen extends GLScreen{
 				guiCam.touchToWorld(touchPoint);
 				
 				if(OverlapTester.pointInRectangle(playBounds, touchPoint)){
+					batcher.beginBatch(Assets.items);
+					batcher.drawSprite(160, 200, 300, 110, Assets.mainMenuStartPush);
+					batcher.endBatch();
 					Assets.playSound(Assets.clickSound);
 					game.setScreen(new GameScreen(game));
 					return;
 				}
 				
-				if(OverlapTester.pointInRectangle(highscoresBounds, touchPoint)){
+				if(OverlapTester.pointInRectangle(enduranceBounds, touchPoint)){
 					Assets.playSound(Assets.clickSound);
 					game.setScreen(new HighscoresScreen(game));
 					return;
 				}
 				
-				if(OverlapTester.pointInRectangle(helpBounds, touchPoint)){
+				if(OverlapTester.pointInRectangle(recordBounds, touchPoint)){
 					Assets.playSound(Assets.clickSound);
 					game.setScreen(new HelpScreen1(game));
 					return;
@@ -100,8 +103,10 @@ public class MainMenuScreen extends GLScreen{
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		batcher.beginBatch(Assets.items);
-		batcher.drawSprite(160, 480 - 10 - 71, 274, 142, Assets.logo);
-		batcher.drawSprite(160, 200, 300, 110, Assets.mainMenu);
+		batcher.drawSprite(160, 200, 315, 352, Assets.logo);
+		batcher.drawSprite(160, 185, 146, 40, Assets.mainMenuStart);
+		batcher.drawSprite(160, 135, 146, 40, Assets.mainMenuEndurance);
+		batcher.drawSprite(160, 85, 146, 40, Assets.mainMenuScoreRecord);
 		batcher.drawSprite(32, 32, 64, 64, Settings.soundEnabled ? Assets.soundOn : Assets.soundOff);
 		batcher.endBatch();
 		
