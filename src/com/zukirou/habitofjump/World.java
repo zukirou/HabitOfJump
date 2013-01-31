@@ -185,7 +185,7 @@ public class World {
 		updateUmas(deltaTime);
 		updateUmaToges(deltaTime);
 		updateCoins(deltaTime);
-		if(boss.state == Boss.BOSS_STATE_ALIVE){
+		if(boss.state != Boss.BOSS_STATE_WAIT){
 			updateBoss(deltaTime);
 			updateUmasFall(deltaTime);
 			updateUmaTogesFall(deltaTime);			
@@ -243,30 +243,32 @@ public class World {
 	}
 	
 	private void updateBoss(float deltaTime){
-			boss.update(deltaTime);
-			
-			if(boss.position.x > 1.5 && boss.position.x < 1.5 + deltaTime){
-				UmaFall umaFall= new UmaFall(2, 13);
-				umasFall.add(umaFall);
-				UmaTogeFall umaTogeFall = new UmaTogeFall(2, 13);
-				umaTogesFall.add(umaTogeFall);																	
-			}
-			
-			if(boss.position.x > 5 && boss.position.x < 5 + deltaTime){
-				UmaFall umaFall= new UmaFall(5, 13);
-				umasFall.add(umaFall);
-				UmaTogeFall umaTogeFall = new UmaTogeFall(5, 13);
-				umaTogesFall.add(umaTogeFall);													
-			}
-			
-			if(boss.position.x > 8 - deltaTime && boss.position.x < 8){
-				UmaFall umaFall= new UmaFall(8, 13);
-				umasFall.add(umaFall);
-				UmaTogeFall umaTogeFall = new UmaTogeFall(8, 13);
-				umaTogesFall.add(umaTogeFall);													
-			}
-			
-			if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){			
+		
+				boss.update(deltaTime);
+				if(boss.state == Boss.BOSS_STATE_ALIVE){
+					if(boss.position.x > 1.5 && boss.position.x < 1.5 + deltaTime){
+						UmaFall umaFall= new UmaFall(2, 13);
+						umasFall.add(umaFall);
+						UmaTogeFall umaTogeFall = new UmaTogeFall(2, 13);
+						umaTogesFall.add(umaTogeFall);																	
+					}
+					
+					if(boss.position.x > 5 && boss.position.x < 5 + deltaTime){
+						UmaFall umaFall= new UmaFall(5, 13);
+						umasFall.add(umaFall);
+						UmaTogeFall umaTogeFall = new UmaTogeFall(5, 13);
+						umaTogesFall.add(umaTogeFall);													
+					}
+					
+					if(boss.position.x > 8 - deltaTime && boss.position.x < 8){
+						UmaFall umaFall= new UmaFall(8, 13);
+						umasFall.add(umaFall);
+						UmaTogeFall umaTogeFall = new UmaTogeFall(8, 13);
+						umaTogesFall.add(umaTogeFall);													
+					}							
+				}
+
+				if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){			
 				state = WORLD_STATE_GAME_STORY_CLEAR;
 			}
 			
@@ -308,9 +310,12 @@ public class World {
 		checkCastleCollisions();
 		if(boss.state == Boss.BOSS_STATE_ALIVE){
 			checkBossCollisions();
+
 			checkUmaFallCollisions();
+			
 			checkUmaTogeFallCollisions();
-			checkUmaTogeFixCollisions();			
+			
+			checkUmaTogeFixCollisions();							
 		}
 
 	}
@@ -400,8 +405,8 @@ public class World {
 		if(OverlapTester.overlapRectangles(boss.bounds, pc.bounds)){										
 			pc.hitBoss();			
 			listener.hitDamage();			
-			bossHp -= 60;
-			if(bossHp < 0){
+			bossHp -= 5;
+			if(bossHp < 0 && boss.state == Boss.BOSS_STATE_ALIVE){
 				listener.bossDead();																				
 				boss.dead();
 			}

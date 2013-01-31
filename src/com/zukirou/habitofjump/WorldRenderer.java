@@ -49,9 +49,9 @@ public class WorldRenderer{
 		renderItems();
 		renderUma();
 		renderCastel();
-		renderBoss();				
 		renderUmaFall();		
 		renderUmaTogeFix();			
+		renderBoss();				
 		batcher.endBatch();			
 		gl.glDisable(GL10.GL_BLEND);
 	}
@@ -123,8 +123,8 @@ public class WorldRenderer{
 	private void renderBoss(){
 		Boss boss = world.boss;		
 		if(boss.state == Boss.BOSS_STATE_DEAD){
-			TextureRegion keyFrame = Assets.bossDead.getKeyFrame(boss.stateTime, Animation.ANIMATION_NONLOOPING);			
-			batcher.drawSprite(boss.position.x, boss.position.y, 3, 3, keyFrame);
+			TextureRegion keyFrame = Assets.bossDead.getKeyFrame(boss.stateTime, Animation.ANIMATION_NONLOOPING);
+			batcher.drawSprite(boss.position.x, boss.position.y, 3, 3, keyFrame);				
 		}else if(boss.state == Boss.BOSS_STATE_ALIVE){		
 			TextureRegion keyFrame = Assets.Boss.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);			
 			float side = boss.velocity.x < 0 ? -1 : 1;						

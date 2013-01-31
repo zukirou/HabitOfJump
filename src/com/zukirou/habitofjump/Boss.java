@@ -22,26 +22,24 @@ public class Boss extends DynamicGameObject{
 	}
 
 	public void update(float deltaTime){
-		if(state == BOSS_STATE_ALIVE){
-			position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-			bounds.lowerLeft.set(position).sub(BOSS_WIDTH / 2, BOSS_HEIGHT / 2);
+		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+		bounds.lowerLeft.set(position).sub(BOSS_WIDTH / 2, BOSS_HEIGHT / 2);
 			
-			if(position.x < BOSS_WIDTH / 2){
-				position.x = BOSS_WIDTH / 2;
-				velocity.x = BOSS_VELOCITY;
-			}
-			if(position.x > World.WORLD_WIDTH - BOSS_WIDTH / 2){
-				position.x = World.WORLD_WIDTH - BOSS_WIDTH / 2;
-				velocity.x = -BOSS_VELOCITY;
-			}
-			stateTime += deltaTime;					
+		if(position.x < BOSS_WIDTH / 2){
+			position.x = BOSS_WIDTH / 2;
+			velocity.x = BOSS_VELOCITY;			
 		}
+
+		if(position.x > World.WORLD_WIDTH - BOSS_WIDTH / 2){
+			position.x = World.WORLD_WIDTH - BOSS_WIDTH / 2;
+			velocity.x = -BOSS_VELOCITY;	
+		}
+		stateTime += deltaTime;					
 	}
 	
 	public void dead(){
+		state = BOSS_STATE_DEAD;
 		stateTime = 0;
 		velocity.x = 0;
-		state = BOSS_STATE_DEAD;
 	}
-	
 }

@@ -300,12 +300,21 @@ public class GameScreen extends GLScreen{
 	}
 	
 	private void presentLevelEnd(){
-		String topText = "the prince is ...";
-		String bottomText = "in another castle!";
-		float topWidth = Assets.font.glyphWidth * topText.length();
-		float bottomWidth = Assets.font.glyphWidth * bottomText.length();
-		Assets.font.drawText(batcher, topText, 160 - topWidth / 2, 480 - 40);
-		Assets.font.drawText(batcher, bottomText, 160 - bottomWidth / 2, 40);
+		if(World.roundLevel > 5){
+			String topText = " BoyFriend is Here!";
+			String bottomText = "Beat Monster!";			
+			float topWidth = Assets.font.glyphWidth * topText.length();
+			float bottomWidth = Assets.font.glyphWidth * bottomText.length();
+			Assets.font.drawText(batcher, topText, 160 - topWidth / 2, 480 - 40);
+			Assets.font.drawText(batcher, bottomText, 160 - bottomWidth / 2, 40);
+		}else{
+			String topText = " BoyFriend is ...";
+			String bottomText = "in another castle!";			
+			float topWidth = Assets.font.glyphWidth * topText.length();
+			float bottomWidth = Assets.font.glyphWidth * bottomText.length();
+			Assets.font.drawText(batcher, topText, 160 - topWidth / 2, 480 - 40);
+			Assets.font.drawText(batcher, bottomText, 160 - bottomWidth / 2, 40);
+		}
 	}
 	
 	private void presentGameOver(){
