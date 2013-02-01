@@ -62,7 +62,7 @@ public class MainMenuScreen extends GLScreen{
 					game.setScreen(new GameScreen(game));
 					return;
 				}
-				
+/*				
 				if(OverlapTester.pointInRectangle(enduranceBounds, touchPoint)){
 					Assets.playSound(Assets.clickSound);
 					game.setScreen(new HighscoresScreen(game));
@@ -74,7 +74,7 @@ public class MainMenuScreen extends GLScreen{
 					game.setScreen(new HelpScreen1(game));
 					return;
 				}
-				
+*/				
 				if(OverlapTester.pointInRectangle(soundBounds, touchPoint)){
 					Assets.playSound(Assets.clickSound);
 					Settings.soundEnabled = !Settings.soundEnabled;
@@ -94,7 +94,7 @@ public class MainMenuScreen extends GLScreen{
 		guiCam.setViewportAndMatrices();
 				
 		gl.glEnable(GL10.GL_TEXTURE_2D);
-		
+
 		batcher.beginBatch(Assets.background);
 		batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion);
 		batcher.endBatch();
