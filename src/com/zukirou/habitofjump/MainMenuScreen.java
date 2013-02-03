@@ -59,7 +59,7 @@ public class MainMenuScreen extends GLScreen{
 					batcher.drawSprite(160, 200, 300, 110, Assets.mainMenuStartPush);
 					batcher.endBatch();
 					Assets.playSound(Assets.clickSound);
-					game.setScreen(new GameScreen(game));
+					game.setScreen(new StoryScreen(game));
 					return;
 				}
 /*				
@@ -78,13 +78,59 @@ public class MainMenuScreen extends GLScreen{
 				if(OverlapTester.pointInRectangle(soundBounds, touchPoint)){
 					Assets.playSound(Assets.clickSound);
 					Settings.soundEnabled = !Settings.soundEnabled;
-					if(Settings.soundEnabled)
-						Assets.music.play();
-					else
-						Assets.music.pause();
+					if(Settings.soundEnabled){
+						switch(Settings.currentRound){
+						case 0:
+							Assets.music00.play();
+							break;
+						case 1:
+							Assets.music01.play();
+							break;
+						case 2:
+							Assets.music02.play();
+							break;
+						case 3:
+							Assets.music03.play();
+							break;
+						case 4:
+							Assets.music04.play();
+							break;
+						case 5:
+							Assets.music05.play();
+							break;
+						case 6:
+							Assets.music06.play();
+							break;
+						}						
+					}else{
+						switch(Settings.currentRound){
+						case 0:
+							Assets.music00.pause();
+							break;
+						case 1:
+							Assets.music01.pause();
+							break;
+						case 2:
+							Assets.music02.pause();
+							break;
+						case 3:
+							Assets.music03.pause();
+							break;
+						case 4:
+							Assets.music04.pause();
+							break;
+						case 5:
+							Assets.music05.pause();
+							break;
+						case 6:
+							Assets.music06.pause();
+							break;
+						}
+						
+					}
 				}
 			}
-		}
+		}	
 	}
 	
 	@Override
@@ -95,22 +141,55 @@ public class MainMenuScreen extends GLScreen{
 				
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
-		batcher.beginBatch(Assets.background);
-		batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion);
-		batcher.endBatch();
-		
+		presentBackGround(Settings.currentRound);
+				
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		batcher.beginBatch(Assets.items);
 		batcher.drawSprite(160, 200, 315, 352, Assets.logo);
 		batcher.drawSprite(160, 185, 146, 40, Assets.mainMenuStart);
-		batcher.drawSprite(160, 135, 146, 40, Assets.mainMenuEndurance);
-		batcher.drawSprite(160, 85, 146, 40, Assets.mainMenuScoreRecord);
+//		batcher.drawSprite(160, 135, 146, 40, Assets.mainMenuEndurance);
+//		batcher.drawSprite(160, 85, 146, 40, Assets.mainMenuScoreRecord);
 		batcher.drawSprite(32, 32, 64, 64, Settings.soundEnabled ? Assets.soundOn : Assets.soundOff);
 		batcher.endBatch();
 		
 		gl.glDisable(GL10.GL_BLEND);
+	}
+	
+	public void presentBackGround(int round){
+		switch(round){
+		case 0:
+			batcher.beginBatch(Assets.bg00);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion00);
+			break;
+		case 1:
+			batcher.beginBatch(Assets.bg01);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion01);
+			break;
+		case 2:
+			batcher.beginBatch(Assets.bg02);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion02);
+			break;
+		case 3:
+			batcher.beginBatch(Assets.bg03);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion03);
+			break;
+		case 4:
+			batcher.beginBatch(Assets.bg04);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion04);
+			break;
+		case 5:
+			batcher.beginBatch(Assets.bg05);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion05);
+			break;
+		case 6:
+			batcher.beginBatch(Assets.bg06);
+			batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion06);
+			break;
+		}
+		
+		batcher.endBatch();		
 	}
 	
 	@Override

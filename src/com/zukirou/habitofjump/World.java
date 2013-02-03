@@ -41,6 +41,7 @@ public class World {
 	public int score;
 	public int state;
 	static int roundLevel;
+	static float explainTime;
 	public int platformType;
 	public float platformX;
 	public float umaX;
@@ -82,8 +83,8 @@ public class World {
 	
 	private void generateLevel(){
 		float y = Platform.PLATFORM_HEIGHT / 2;
-		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);		
-		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){	
+		float maxJumpHeight = PC.PC_JUMP_VELOCITY * PC.PC_JUMP_VELOCITY / (2 * -gravity.y);	
+		while(y < WORLD_HEIGHT - WORLD_WIDTH / 2){
 //			roundLevel = 6;//ƒ‰ƒEƒ“ƒh’²®—p
 			switch(roundLevel){
 			case 0:
@@ -112,7 +113,7 @@ public class World {
 				platformType = rand.nextFloat() > 0.5f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
 				becomePulverizer = 0.3f;
 
-				if(rand.nextFloat() > 0.8f && y < 70){
+				if(rand.nextFloat() > 0.8f && y < 55){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);					
 				}else{
@@ -125,7 +126,7 @@ public class World {
 				umaX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2; 
 				platformType = rand.nextFloat() > 0.5f ? Platform.PLATFORM_TYPE_MOVING : Platform.PLATFORM_TYPE_STATIC;
 				becomePulverizer = 0;
-				if(rand.nextFloat() > 0.5f && y < 70){
+				if(rand.nextFloat() > 0.5f && y < 55){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);					
 				}else{
@@ -141,7 +142,7 @@ public class World {
 			case 5:
 				platformX = rand.nextFloat() * (WORLD_WIDTH - Platform.PLATFORM_WIDTH) + Platform.PLATFORM_WIDTH / 2;
 				umaX = rand.nextFloat() * (WORLD_WIDTH - Uma.UMA_WIDTH) + Uma.UMA_WIDTH / 2; 
-				if(y > 0 && y < 20 || y > 30 && y < 50 || y > 60 && y < 65){
+				if(y > 0 && y < 10 || y > 20 && y < 30 || y > 40 && y < 55){
 					Spring spring = new Spring(platformX, y + Platform.PLATFORM_HEIGHT / 2 + Spring.SPRING_HEIGHT / 2);
 					springs.add(spring);
 				}else{
@@ -174,12 +175,19 @@ public class World {
 				y += (maxJumpHeight - 0.5f);
 				y -= rand.nextFloat() * (maxJumpHeight / 3);
 			}
+			
+			if(y > WORLD_HEIGHT - WORLD_WIDTH * 2 && roundLevel == 0)
+				break;
 		}
 			castle = new Castle(WORLD_WIDTH / 2, y);
 	}
 
 	
 	public void update(float deltaTime, float accelX){
+		
+		if(Settings.currentRound == 0 && pc.state == PC.PC_STATE_FALL)
+			explainTime += deltaTime;
+
 		updatePc(deltaTime, accelX);
 		updatePlatforms(deltaTime);
 		updateUmas(deltaTime);
@@ -192,7 +200,7 @@ public class World {
 		}
 		
 		if(pc.state != PC.PC_STATE_HIT)
-			checkCollisions();
+			checkCollisions(deltaTime);
 		if(blankGround == 0)
 			checkGameOver();
 	}
@@ -267,10 +275,13 @@ public class World {
 						umaTogesFall.add(umaTogeFall);													
 					}							
 				}
-
-				if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){			
-				state = WORLD_STATE_GAME_STORY_CLEAR;
-			}
+				if(boss.state == Boss.BOSS_STATE_DAMAGE && boss.stateTime > Boss.BOSS_DAMAGE_TIME){
+					boss.state = Boss.BOSS_STATE_ALIVE;
+				}
+				
+				if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){							
+					state = WORLD_STATE_GAME_STORY_CLEAR;			
+				}
 			
 	}
 
@@ -302,14 +313,14 @@ public class World {
 		}
 	}
 	
-	private void checkCollisions(){
+	private void checkCollisions(float deltaTime){
 		checkPlatformCollisions();
 		checkUmaCollisions();
 		checkUmaTogeCollisions();
 		checkItemCollisions();
 		checkCastleCollisions();
 		if(boss.state == Boss.BOSS_STATE_ALIVE){
-			checkBossCollisions();
+			checkBossCollisions(deltaTime);
 
 			checkUmaFallCollisions();
 			
@@ -401,11 +412,12 @@ public class World {
 		}				
 	}		
 
-	private void checkBossCollisions(){
+	private void checkBossCollisions(float deltaTime){
 		if(OverlapTester.overlapRectangles(boss.bounds, pc.bounds)){										
-			pc.hitBoss();			
-			listener.hitDamage();			
+			pc.hitBoss();
+			listener.hitDamage();
 			bossHp -= 5;
+			boss.damage(deltaTime);
 			if(bossHp < 0 && boss.state == Boss.BOSS_STATE_ALIVE){
 				listener.bossDead();																				
 				boss.dead();
@@ -442,7 +454,7 @@ public class World {
 	
 	private void checkCastleCollisions(){
 		if(pc.state == PC.PC_STATE_FALL && OverlapTester.overlapRectangles(castle.bounds, pc.bounds)){
-			roundLevel ++;
+//			roundLevel ++;
 			state = WORLD_STATE_NEXT_LEVEL;
 		}
 	}

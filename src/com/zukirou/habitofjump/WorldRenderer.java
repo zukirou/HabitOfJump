@@ -33,9 +33,43 @@ public class WorldRenderer{
 	}
 	
 	public void renderBackground(){
-		batcher.beginBatch(Assets.background);
-		batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion);
-		batcher.endBatch();
+		switch(Settings.currentRound){
+		case 0:
+			batcher.beginBatch(Assets.bg00);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion00);
+			batcher.endBatch();			
+			break;
+		case 1:
+			batcher.beginBatch(Assets.bg01);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion01);
+			batcher.endBatch();
+			break;
+		case 2:
+			batcher.beginBatch(Assets.bg02);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion02);
+			batcher.endBatch();
+			break;
+		case 3:
+			batcher.beginBatch(Assets.bg03);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion03);
+			batcher.endBatch();
+			break;
+		case 4:
+			batcher.beginBatch(Assets.bg04);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion04);
+			batcher.endBatch();
+			break;
+		case 5:
+			batcher.beginBatch(Assets.bg05);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion05);
+			batcher.endBatch();
+			break;
+		case 6:
+			batcher.beginBatch(Assets.bg06);
+			batcher.drawSprite(cam.position.x, cam.position.y, FRUSTUM_WIDTH, FRUSTUM_HEIGHT, Assets.backgroundRegion06);
+			batcher.endBatch();
+			break;
+		}
 	}
 	
 	public void renderObjects(){
@@ -44,6 +78,7 @@ public class WorldRenderer{
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		batcher.beginBatch(Assets.items);
+		renderExplain();
 		renderPc();
 		renderPlatforms();
 		renderItems();
@@ -54,6 +89,9 @@ public class WorldRenderer{
 		renderBoss();				
 		batcher.endBatch();			
 		gl.glDisable(GL10.GL_BLEND);
+	}
+	
+	private void renderExplain(){
 	}
 	
 	private void renderPc(){
@@ -121,8 +159,11 @@ public class WorldRenderer{
 	}
 	
 	private void renderBoss(){
-		Boss boss = world.boss;		
-		if(boss.state == Boss.BOSS_STATE_DEAD){
+		Boss boss = world.boss;
+		if(boss.state == Boss.BOSS_STATE_DAMAGE){
+			TextureRegion keyFrame = Assets.bossDamage.getKeyFrame(boss.stateTime, Animation.ANIMATION_LOOPING);
+			batcher.drawSprite(boss.position.x, boss.position.y, 3, 3, keyFrame);
+		}else if(boss.state == Boss.BOSS_STATE_DEAD){
 			TextureRegion keyFrame = Assets.bossDead.getKeyFrame(boss.stateTime, Animation.ANIMATION_NONLOOPING);
 			batcher.drawSprite(boss.position.x, boss.position.y, 3, 3, keyFrame);				
 		}else if(boss.state == Boss.BOSS_STATE_ALIVE){		
@@ -135,7 +176,7 @@ public class WorldRenderer{
 	
 	private void renderUmaFall(){
 		Boss boss = world.boss;
-		if(boss.state == Boss.BOSS_STATE_ALIVE){
+		if(boss.state == Boss.BOSS_STATE_ALIVE || boss.state == Boss.BOSS_STATE_DAMAGE){
 			int len = world.umasFall.size();
 			for(int i = 0; i < len; i++){
 				UmaFall umaFall = world.umasFall.get(i);

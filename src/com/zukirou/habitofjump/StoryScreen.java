@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+
 import com.zukirou.gameFrameWork.Game;
 import com.zukirou.gameFrameWork.Input.TouchEvent;
 
@@ -16,27 +17,21 @@ import com.zukirou.game.Framework.math.OverlapTester;
 import com.zukirou.game.Framework.math.Rectangle;
 import com.zukirou.game.Framework.math.Vector2;
 
-public class HighscoresScreen extends GLScreen{
+
+public class StoryScreen extends GLScreen{
 	Camera2D guiCam;
 	SpriteBatcher batcher;
-	Rectangle backBounds;
+	Rectangle arrowBounds;
+	int arrowTouchFlag = 0;
 	Vector2 touchPoint;
-	String[] highScores;
-	float xOffset = 0;
+	int round = Settings.currentRound;
 	
-	public HighscoresScreen(Game game){
+	public StoryScreen(Game game){
 		super(game);
-		
 		guiCam = new Camera2D(glGraphics, 320, 480);
-		backBounds = new Rectangle(0, 0, 64, 64);
-		touchPoint = new Vector2();
 		batcher = new SpriteBatcher(glGraphics, 100);
-		highScores = new String[5];
-		for(int i = 0; i < 5; i++){
-			highScores[i] = (i + 1) + ": " + Settings.highscores[i];
-			xOffset = Math.max(highScores[i].length() * Assets.font.glyphWidth, xOffset);
-		}
-		xOffset = 160 - xOffset / 2 + Assets.font.glyphWidth / 2;
+		arrowBounds = new Rectangle(90, 90, 100, 100);
+		touchPoint = new Vector2();
 	}
 	
 	@Override
@@ -46,15 +41,21 @@ public class HighscoresScreen extends GLScreen{
 		int len = touchEvents.size();
 		for(int i = 0; i < len; i++){
 			TouchEvent event = touchEvents.get(i);
-			touchPoint.set(event.x, event.y);
-			guiCam.touchToWorld(touchPoint);
-			
 			if(event.type == TouchEvent.TOUCH_UP){
-				if(OverlapTester.pointInRectangle(backBounds, touchPoint)){
-					game.setScreen(new MainMenuScreen(game));
-					return;
-				}
+				touchPoint.set(event.x, event.y);
+				guiCam.touchToWorld(touchPoint);
+				arrowTouchFlag = 1;
 			}
+		
+			if(arrowTouchFlag == 1 && event.type == TouchEvent.TOUCH_UP && OverlapTester.pointInRectangle(arrowBounds, touchPoint)){
+				arrowTouchFlag = 0;
+				Assets.playSound(Assets.clickSound);
+				game.setScreen(new GameScreen(game));
+				
+				return;
+				
+			}
+			
 		}
 	}
 	
@@ -63,36 +64,48 @@ public class HighscoresScreen extends GLScreen{
 		GL10 gl = glGraphics.getGL();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		guiCam.setViewportAndMatrices();
-		
+				
 		gl.glEnable(GL10.GL_TEXTURE_2D);
-
-/*		
-		batcher.beginBatch(Assets.background);
-		batcher.drawSprite(160, 240, 320, 480, Assets.backgroundRegion);
-		batcher.endBatch();
-*/		
+				
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		batcher.beginBatch(Assets.items);
-		batcher.drawSprite(160, 360, 300, 33, Assets.highScoresRegion);
-		
-		float y = 240;
-		for(int i = 4; i >= 0; i--){
-			Assets.font.drawText(batcher, highScores[i], xOffset, y);
-			y += Assets.font.glyphHeight;
+		if(arrowTouchFlag == 1){
+			batcher.drawSprite(160, 150, 64, 32, Assets.goArrow);
 		}
-		
-		batcher.drawSprite(32, 32, 64, 64, Assets.arrow);
-		batcher.endBatch();
-		
+		switch(round){
+		case 0:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR00);
+			break;
+		case 1:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR01);
+			break;
+		case 2:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR02);
+			break;
+		case 3:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR03);
+			break;
+		case 4:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR04);
+			break;
+		case 5:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR05);
+			break;
+		case 6:
+			batcher.drawSprite(160, 480 - 192, 256, 192, Assets.storyR06);
+			break;
+		}
+		batcher.endBatch();	
+
 		gl.glDisable(GL10.GL_BLEND);
 	}
-
+	
+	
 	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
+	public void pause(){
+		Settings.save(game.getFileIO());
 	}
 
 	@Override

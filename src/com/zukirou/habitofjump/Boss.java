@@ -10,7 +10,9 @@ public class Boss extends DynamicGameObject{
 	public static final int BOSS_STATE_ALIVE = 0;
 	public static final int BOSS_STATE_DEAD = 1;
 	public static final int BOSS_STATE_WAIT = 2;
+	public static final int BOSS_STATE_DAMAGE = 3;
 	public static final float BOSS_DEAD_TIME = 0.2f * 8;
+	public static final float BOSS_DAMAGE_TIME = 0.2f * 3;
 	
 	float stateTime = 0;
 	int state;
@@ -35,6 +37,11 @@ public class Boss extends DynamicGameObject{
 			velocity.x = -BOSS_VELOCITY;	
 		}
 		stateTime += deltaTime;					
+	}
+	
+	public void damage(float deltaTime){
+		state = BOSS_STATE_DAMAGE;
+		stateTime += deltaTime;
 	}
 	
 	public void dead(){

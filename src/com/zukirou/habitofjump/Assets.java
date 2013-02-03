@@ -36,10 +36,7 @@ public class Assets{
 	public static TextureRegion mainMenuScoreRecord;
 	public static TextureRegion mainMenuScoreRecordPush;
 	
-	public static TextureRegion expl00;
-	public static TextureRegion expl01;
-	public static TextureRegion expl02;
-	public static TextureRegion expl03;
+	public static Animation explain;
 	
 	public static TextureRegion ready00;
 	public static TextureRegion ready01;
@@ -48,13 +45,15 @@ public class Assets{
 	public static TextureRegion ready04;
 	public static TextureRegion ready05;
 	public static TextureRegion ready06;
-	public static TextureRegion r00Title;
-	public static TextureRegion r01Title;
-	public static TextureRegion r02Title;
-	public static TextureRegion r03Title;
-	public static TextureRegion r04Title;
-	public static TextureRegion r05Title;
-	public static TextureRegion r06Title;
+	public static TextureRegion storyR00;
+	public static TextureRegion storyR01;
+	public static TextureRegion storyR02;
+	public static TextureRegion storyR03;
+	public static TextureRegion storyR04;
+	public static TextureRegion storyR05;
+	public static TextureRegion storyR06;
+	public static TextureRegion storyEnd;
+	public static TextureRegion end;
 	public static TextureRegion gameOver;
 	public static TextureRegion highScoresRegion;
 	public static TextureRegion soundOn;
@@ -104,17 +103,17 @@ public class Assets{
 		bg00 = new Texture(game, "bg00.png");
 		backgroundRegion00 = new TextureRegion(bg00, 0, 0, 320, 480);
 		bg01 = new Texture(game, "bg01.png");
-		backgroundRegion00 = new TextureRegion(bg01, 0, 0, 320, 480);
+		backgroundRegion01 = new TextureRegion(bg01, 0, 0, 320, 480);
 		bg02 = new Texture(game, "bg02.png");
-		backgroundRegion00 = new TextureRegion(bg02, 0, 0, 320, 480);
+		backgroundRegion02 = new TextureRegion(bg02, 0, 0, 320, 480);
 		bg03 = new Texture(game, "bg03.png");
-		backgroundRegion00 = new TextureRegion(bg03, 0, 0, 320, 480);
+		backgroundRegion03 = new TextureRegion(bg03, 0, 0, 320, 480);
 		bg04 = new Texture(game, "bg04.png");
-		backgroundRegion00 = new TextureRegion(bg04, 0, 0, 320, 480);
+		backgroundRegion04 = new TextureRegion(bg04, 0, 0, 320, 480);
 		bg05 = new Texture(game, "bg05.png");
-		backgroundRegion00 = new TextureRegion(bg05, 0, 0, 320, 480);
+		backgroundRegion05 = new TextureRegion(bg05, 0, 0, 320, 480);
 		bg06 = new Texture(game, "bg06.png");
-		backgroundRegion00 = new TextureRegion(bg06, 0, 0, 320, 480);
+		backgroundRegion06 = new TextureRegion(bg06, 0, 0, 320, 480);
 
 		items = new Texture(game, "items.png");
 		
@@ -125,12 +124,12 @@ public class Assets{
 		mainMenuEndurancePush = new TextureRegion(items, 205, 335, 182, 42);
 		mainMenuScoreRecord = new TextureRegion(items, 0, 384, 155, 42);
 		mainMenuScoreRecordPush = new TextureRegion(items, 173, 384, 155, 42);
-		
-		expl00 = new TextureRegion(items, 256, 224, 128, 64);
-		expl01 = new TextureRegion(items, 384, 224, 128, 64);
-		expl02 = new TextureRegion(items, 512, 224, 128, 64);
-		expl03 = new TextureRegion(items, 640, 224, 128, 64);
-		
+				
+		explain = new Animation(1.0f, 	new TextureRegion(items, 256, 224, 128, 64),
+										new TextureRegion(items, 384, 224, 128, 64),
+										new TextureRegion(items, 512, 224, 128, 64),
+										new TextureRegion(items, 640, 224, 96, 64));
+				
 		ready00 = new TextureRegion(items, 192, 192, 96, 32);
 		ready01 = new TextureRegion(items, 288, 192, 96, 32);
 		ready02 = new TextureRegion(items, 384, 192, 96, 32);
@@ -138,6 +137,16 @@ public class Assets{
 		ready04 = new TextureRegion(items, 576, 192, 96, 32);
 		ready05 = new TextureRegion(items, 672, 192, 96, 32);
 		ready06 = new TextureRegion(items, 768, 192, 96, 32);
+		
+		storyR00 = new TextureRegion(items, 0, 480, 256, 192);
+		storyR01 = new TextureRegion(items, 256, 480, 256, 192);
+		storyR02 = new TextureRegion(items, 512, 480, 256, 192);
+		storyR03 = new TextureRegion(items, 768, 480, 256, 192);
+		storyR04 = new TextureRegion(items, 320, 672, 256, 192);
+		storyR05 = new TextureRegion(items, 576, 672, 256, 192);
+		storyR06 = new TextureRegion(items, 832, 672, 192, 192);
+		storyEnd = new TextureRegion(items, 320, 864, 256, 160);
+		end = new TextureRegion(items, 800, 224, 96, 32);
 		
 		gameOver = new TextureRegion(items, 864, 192, 96, 32);
 		highScoresRegion = new TextureRegion(Assets.items, 256, 384, 224, 32);
@@ -184,7 +193,8 @@ public class Assets{
 				new TextureRegion(items, 288, 96, 96, 96));
 		
 		bossDamage = new Animation(0.2f,	new TextureRegion(items, 768, 96, 96, 96),
-											new TextureRegion(items, 672, 96, 96, 96));
+											new TextureRegion(items, 768, 96, 96, 96),
+											new TextureRegion(items, 384, 96, 96, 96));
 		
 		bossDead = new Animation(0.2f,	new TextureRegion(items, 480, 0, 96, 96),
 										new TextureRegion(items, 576, 0, 96, 96),
