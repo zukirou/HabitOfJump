@@ -110,6 +110,11 @@ public class WorldRenderer{
 		}
 		float side = world.pc.velocity.x < 0 ? -1 : 1;
 		batcher.drawSprite(world.pc.position.x, world.pc.position.y, side * 1, 1, keyFrame);
+		if(Settings.currentRound == 6){
+			TextureRegion keyFrameFlame;
+			keyFrameFlame = Assets.girlFlame.getKeyFrame(world.pc.stateTime, Animation.ANIMATION_LOOPING);
+			batcher.drawSprite(world.pc.position.x, world.pc.position.y, side * 1, -1, keyFrameFlame);
+		}
 	}
 	
 	private void renderPlatforms(){

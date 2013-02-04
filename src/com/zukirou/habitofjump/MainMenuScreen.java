@@ -79,54 +79,9 @@ public class MainMenuScreen extends GLScreen{
 					Assets.playSound(Assets.clickSound);
 					Settings.soundEnabled = !Settings.soundEnabled;
 					if(Settings.soundEnabled){
-						switch(Settings.currentRound){
-						case 0:
 							Assets.music00.play();
-							break;
-						case 1:
-							Assets.music01.play();
-							break;
-						case 2:
-							Assets.music02.play();
-							break;
-						case 3:
-							Assets.music03.play();
-							break;
-						case 4:
-							Assets.music04.play();
-							break;
-						case 5:
-							Assets.music05.play();
-							break;
-						case 6:
-							Assets.music06.play();
-							break;
-						}						
 					}else{
-						switch(Settings.currentRound){
-						case 0:
 							Assets.music00.pause();
-							break;
-						case 1:
-							Assets.music01.pause();
-							break;
-						case 2:
-							Assets.music02.pause();
-							break;
-						case 3:
-							Assets.music03.pause();
-							break;
-						case 4:
-							Assets.music04.pause();
-							break;
-						case 5:
-							Assets.music05.pause();
-							break;
-						case 6:
-							Assets.music06.pause();
-							break;
-						}
-						
 					}
 				}
 			}
@@ -147,6 +102,7 @@ public class MainMenuScreen extends GLScreen{
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		
 		batcher.beginBatch(Assets.items);
+		batcher.drawSprite(160, 420, 288, 100, Assets.title);
 		batcher.drawSprite(160, 200, 315, 352, Assets.logo);
 		batcher.drawSprite(160, 185, 146, 40, Assets.mainMenuStart);
 //		batcher.drawSprite(160, 135, 146, 40, Assets.mainMenuEndurance);

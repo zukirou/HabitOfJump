@@ -233,21 +233,11 @@ public class GameScreen extends GLScreen{
 	
 	private void updateGameStoryClear(){
 		List<TouchEvent> touchEvents = game.getInput().getTouchEvents();
-		int len = touchEvents.size();
+		int len = touchEvents.size();		
 		for(int i = 0; i < len; i++){
 			TouchEvent event = touchEvents.get(i);
 			if(event.type == TouchEvent.TOUCH_UP){
-				batcher.beginBatch(Assets.items);
-				batcher.drawSprite(160 - 96, 100, 96, 32, Assets.end);
-				batcher.endBatch();
-				break;
-			}else{
-				continue;
-			}
-		}
-		for(int i = 0; i < len; i++){
-			TouchEvent event = touchEvents.get(i);
-			if(event.type == TouchEvent.TOUCH_UP){
+				World.roundLevel = 0;
 				Settings.currentRound = 0;
 				World.camMovFlag = 0;
 				World.blankGround = 0;

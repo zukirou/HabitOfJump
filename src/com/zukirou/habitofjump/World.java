@@ -276,7 +276,11 @@ public class World {
 					}							
 				}
 				if(boss.state == Boss.BOSS_STATE_DAMAGE && boss.stateTime > Boss.BOSS_DAMAGE_TIME){
-					boss.state = Boss.BOSS_STATE_ALIVE;
+					if(bossHp < 0){
+						boss.state = Boss.BOSS_STATE_DEAD;						
+					}else{
+						boss.state = Boss.BOSS_STATE_ALIVE;
+					}
 				}
 				
 				if(boss.state == Boss.BOSS_STATE_DEAD && boss.stateTime > Boss.BOSS_DEAD_TIME){							
@@ -417,11 +421,11 @@ public class World {
 			pc.hitBoss();
 			listener.hitDamage();
 			bossHp -= 5;
-			boss.damage(deltaTime);
-			if(bossHp < 0 && boss.state == Boss.BOSS_STATE_ALIVE){
+			if(bossHp < 0 && boss.state == Boss.BOSS_STATE_ALIVE || bossHp < 0 && boss.state == Boss.BOSS_STATE_DAMAGE){
 				listener.bossDead();																				
 				boss.dead();
 			}
+			boss.damage(deltaTime);
 		}					
 	}
 

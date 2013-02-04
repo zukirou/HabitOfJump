@@ -27,7 +27,7 @@ public class Assets{
 	
 	
 	public static Texture items;
-	
+	public static TextureRegion title;
 	public static TextureRegion logo;
 	public static TextureRegion mainMenuStart;
 	public static TextureRegion mainMenuStartPush;
@@ -75,12 +75,6 @@ public class Assets{
 	public static TextureRegion nonBreakPlatform;
 	public static Font font;
 	public static Music music00;
-	public static Music music01;
-	public static Music music02;
-	public static Music music03;
-	public static Music music04;
-	public static Music music05;
-	public static Music music06;
 	public static Sound jumpSound;
 	public static Sound highJumpSound;
 	public static Sound hitSound;
@@ -100,6 +94,7 @@ public class Assets{
 	public static Animation girlFlame;
 	
 	public static void load(GLGame game){
+		
 		bg00 = new Texture(game, "bg00.png");
 		backgroundRegion00 = new TextureRegion(bg00, 0, 0, 320, 480);
 		bg01 = new Texture(game, "bg01.png");
@@ -116,6 +111,8 @@ public class Assets{
 		backgroundRegion06 = new TextureRegion(bg06, 0, 0, 320, 480);
 
 		items = new Texture(game, "items.png");
+
+		title = new TextureRegion(items, 384, 288, 288, 128);
 		
 		logo = new TextureRegion(items, 0, 672, 320, 352);
 		mainMenuStart = new TextureRegion(items, 0, 288, 146, 40);
@@ -144,7 +141,7 @@ public class Assets{
 		storyR03 = new TextureRegion(items, 768, 480, 256, 192);
 		storyR04 = new TextureRegion(items, 320, 672, 256, 192);
 		storyR05 = new TextureRegion(items, 576, 672, 256, 192);
-		storyR06 = new TextureRegion(items, 832, 672, 192, 192);
+		storyR06 = new TextureRegion(items, 832, 672, 192, 224);
 		storyEnd = new TextureRegion(items, 320, 864, 256, 160);
 		end = new TextureRegion(items, 800, 224, 96, 32);
 		
@@ -217,107 +214,26 @@ public class Assets{
 		music00 = game.getAudio().newMusic("R00.ogg");
 		music00.setLooping(true);
 		music00.setVolume(0.5f);
-		music01 = game.getAudio().newMusic("R01.ogg");
-		music01.setLooping(true);
-		music01.setVolume(0.5f);
-		music02 = game.getAudio().newMusic("R02.ogg");
-		music02.setLooping(true);
-		music02.setVolume(0.5f);
-		music03 = game.getAudio().newMusic("R03.ogg");
-		music03.setLooping(true);
-		music03.setVolume(0.5f);
-		music04 = game.getAudio().newMusic("R04.ogg");
-		music04.setLooping(true);
-		music04.setVolume(0.5f);
-		music05 = game.getAudio().newMusic("R05.ogg");
-		music05.setLooping(true);
-		music05.setVolume(0.5f);
-		music06 = game.getAudio().newMusic("R06.ogg");
-		music06.setLooping(true);
-		music06.setVolume(0.5f);
 		
 		if(Settings.soundEnabled)
-			switch(Settings.currentRound){
-			case 0:
-				music00.play();
-				break;
-			case 1:
-				music01.play();
-				break;
-			case 2:
-				music02.play();
-				break;
-			case 3:
-				music03.play();
-				break;
-			case 4:
-				music04.play();
-				break;
-			case 5:
-				music05.play();
-				break;
-			case 6:
-				music06.play();
-				break;
-			}
-		jumpSound = game.getAudio().newSound("jump.ogg");
+			music00.play();	
+		jumpSound = game.getAudio().newSound("jump.ogg");		
 		highJumpSound = game.getAudio().newSound("up.ogg");
 		hitSound = game.getAudio().newSound("damage.ogg");
 		coinSound = game.getAudio().newSound("goin.ogg");
-		hitDamageSound00 = game.getAudio().newSound("hitDamage00.ogg");
-		hitDamageSound01 = game.getAudio().newSound("hitDamage01.ogg");
+		hitDamageSound00 = game.getAudio().newSound("hitDamage00.ogg");				
+		hitDamageSound01 = game.getAudio().newSound("hitDamage01.ogg");			
 		hitDamageSound02 = game.getAudio().newSound("hitDamage02.ogg");
-		bossDeadSound = game.getAudio().newSound("bossDead.ogg");		
+		bossDeadSound = game.getAudio().newSound("bossDead.ogg");					
 		clickSound = game.getAudio().newSound("click.ogg");
-		
+
 	}
 	
 	public static void reload(){
-		switch(Settings.currentRound){
-		case 0:
 			bg00.reload();
 			items.reload();
 			if(Settings.soundEnabled)
 				music00.play();
-			break;
-		case 1:
-			bg01.reload();
-			items.reload();
-			if(Settings.soundEnabled)
-				music01.play();
-			break;
-		case 2:
-			bg02.reload();
-			items.reload();
-			if(Settings.soundEnabled)
-				music02.play();
-			break;
-		case 3:
-			bg03.reload();
-			items.reload();
-			if(Settings.soundEnabled)
-				music03.play();
-			break;
-		case 4:
-			bg04.reload();
-			items.reload();
-			if(Settings.soundEnabled)
-				music04.play();
-			break;
-		case 5:
-			bg05.reload();
-			items.reload();
-			if(Settings.soundEnabled)
-				music05.play();
-			break;
-		case 6:
-			bg06.reload();
-			items.reload();
-			if(Settings.soundEnabled)
-				music06.play();
-			break;
-
-		}
 	}
 	
 	public static void playSound(Sound sound){
